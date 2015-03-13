@@ -1,5 +1,7 @@
 # traveler
 
+traveler is a website project for presenting the project for Digital Poetics course.
+
 1. install Apache2 server on Ubuntu
 
 	$: sudo apt-get install apache2
