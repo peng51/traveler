@@ -8,6 +8,7 @@
 
 2. setup the root directory of the website
 	$: cd /etc/apache2
-	edit the ports.conf by adding a virtual host to the directory of public_html
+	edit /etc/apache2/sites-avaliable/default by changing the DocumentRoot and Directory to public_html/
 	restart the apache2 server
+	$: sudo service apache2 restart
 	
