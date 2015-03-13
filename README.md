@@ -18,3 +18,10 @@ traveler is a website project for presenting the project for Digital Poetics cou
 	
 	$: sudo service apache2 restart
 	
+	Or 
+
+	$: cd /etc/apache2
+	
+	edit /etc/apache2/sites-available/000-default.conf
+	
+	edit /etc/apache2/apache2.conf
