@@ -30,6 +30,10 @@ traveler is a website project for presenting the project for Digital Poetics cou
 
 	in Chrome, type chrome://gpu and chrome://flags to check the WebGL status
 
-	install the Nvidia graphics driver if there is none
+	install the graphics driver if there is none
 
 	update the Chrome
+	
+	$: sudo apt-get install mesa-utils
+	
+	still not working
