@@ -25,3 +25,11 @@ traveler is a website project for presenting the project for Digital Poetics cou
 	edit /etc/apache2/sites-available/000-default.conf
 	
 	edit /etc/apache2/apache2.conf
+
+3. setup WebGL for Chrome in Ubuntu
+
+	in Chrome, type chrome://gpu and chrome://flags to check the WebGL status
+
+	install the Nvidia graphics driver if there is none
+
+	update the Chrome
