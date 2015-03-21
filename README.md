@@ -34,6 +34,4 @@ traveler is a website project for presenting the project for Digital Poetics cou
 
 	update the Chrome
 	
-	$: sudo apt-get install mesa-utils
-	
-	still not working
+	install the newest version of Ubuntu	
