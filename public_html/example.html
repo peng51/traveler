@@ -6,9 +6,7 @@
 </head>
 
 <body>
-'Nothing appears?' <br />
 
-<!--<script src="js/three.min.js"></script>-->
 <script>
 
         var scene, camera, renderer;
@@ -18,28 +16,23 @@
         animate();
 
         function init() {
-		console.log("In init.\n");
                 scene = new THREE.Scene();
-		//document.write("after creating scene.\n")
                 camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
                 camera.position.z = 1000;
-		//document.write("after camera.\n")
-                geometry = new THREE.BoxGeometry( 200, 200, 200 );
+                
+		
+		geometry = new THREE.BoxGeometry( 200, 200, 200 );
                 material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
 		
                 mesh = new THREE.Mesh( geometry, material );
                 scene.add( mesh );
-		//document.write("after adding mesh.\n")
-                renderer = new THREE.WebGLRenderer();
-                document.write("new render.\n")
-		//renderer.setSize( window.innerWidth, window.innerHeight );
-		document.write("after render\n")
+                
+		renderer = new THREE.WebGLRenderer();
+		renderer.setSize( window.innerWidth, window.innerHeight );
                 document.body.appendChild( renderer.domElement );
-		document.write("init ends.\n")
         }
 
         function animate() {
-		document.write("Nothing in animate happens?");
                 requestAnimationFrame( animate );
 
                 mesh.rotation.x += 0.01;
