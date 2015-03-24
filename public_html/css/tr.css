@@ -1,7 +1,7 @@
 .btn {
 	display:block;
-    	width: 80px;
-    	height: 80px;
+    	width: 70px;
+    	height: 70px;
     	line-height:50px;
     	border: 2px solid #f5f5f5;
    	border-radius: 50%;
@@ -10,7 +10,7 @@
     	text-decoration:none;
     	background: #464646;
     	box-shadow: 0 0 3px gray;
-    	font-size: 15px;
+    	font-size: 12px;
     	font-weight:bold;
 }
 .btn:hover {
@@ -20,13 +20,17 @@
 #arabic {
    	position: absolute;
    	left: 100px; 
-   	top: 300px;	
+   	top: 305px;
+	width: 60px;
+	height: 60px;	
 }
 
 #chinese {
 	position: absolute;
-	left: 700px; 
-	top: 300px;
+	left: 720px; 
+	top: 305px;
+	width: 60px;
+	height: 60px;
 }
 
 #english {
@@ -37,12 +41,18 @@
 
 #russian{
 	position: absolute;
-	left: 400px;
-	top: 20px;
+	left: 405px;
+	top: 40px;
+	width: 60px;
+	height: 60px;
 }
 
 #indian{
 	position: absolute;
-	left: 400px;
+	left: 405px;
 	top: 580px;
+	width: 60px;
+	height: 60px;
 }
+
+
