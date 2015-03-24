@@ -1,0 +1,48 @@
+.btn {
+	display:block;
+    	width: 80px;
+    	height: 80px;
+    	line-height:50px;
+    	border: 2px solid #f5f5f5;
+   	border-radius: 50%;
+    	color:#f5f5f5;
+    	text-align:center;
+    	text-decoration:none;
+    	background: #464646;
+    	box-shadow: 0 0 3px gray;
+    	font-size: 15px;
+    	font-weight:bold;
+}
+.btn:hover {
+    	background: #3cb0fd;
+}
+
+#arabic {
+   	position: absolute;
+   	left: 100px; 
+   	top: 300px;	
+}
+
+#chinese {
+	position: absolute;
+	left: 700px; 
+	top: 300px;
+}
+
+#english {
+	position: absolute;
+	left: 400px;
+	top: 300px;
+}
+
+#russian{
+	position: absolute;
+	left: 400px;
+	top: 20px;
+}
+
+#indian{
+	position: absolute;
+	left: 400px;
+	top: 580px;
+}
