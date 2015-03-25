@@ -19,40 +19,42 @@
 
 #arabic {
    	position: absolute;
-   	left: 100px; 
-   	top: 305px;
-	width: 60px;
-	height: 60px;	
+   	left: 0%; 
+   	top: 40%;
+	width: 10%;
+	height: 10%;	
 }
 
 #chinese {
 	position: absolute;
-	left: 720px; 
-	top: 305px;
-	width: 60px;
-	height: 60px;
+   	left: 90%; 
+   	top: 40%;
+	width: 10%;
+	height: 10%;
 }
 
 #english {
 	position: absolute;
-	left: 400px;
-	top: 300px;
+   	left: 40%; 
+   	top: 40%;
+	width: 10%;
+	height: 10%;
 }
 
 #russian{
 	position: absolute;
-	left: 405px;
-	top: 40px;
-	width: 60px;
-	height: 60px;
+   	left: 40%; 
+   	top: 0%;
+	width: 10%;
+	height: 10%;
 }
 
-#indian{
+#hindi{
 	position: absolute;
-	left: 405px;
-	top: 580px;
-	width: 60px;
-	height: 60px;
+   	left: 40%; 
+   	top: 90%;
+	width: 10%;
+	height: 10%;
 }
 
 
