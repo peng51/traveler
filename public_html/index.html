@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
   	<title>Traveler Project</title>
 	<link rel="stylesheet" type="text/css" href="css/tr.css">
 </head>
@@ -11,12 +13,208 @@
 		<a href = "example.html">First ThreeJS example </a>
 	-->
 	
-	<!-- put the five buttons -->	
-	<button class="btn" id='arabic'>Arabic</button>
-	<button class='btn' id='english'>English</button>
-	<button class='btn' id='russian'>Russian</button>
-	<button class='btn' id='chinese'>Chinese</button>
-	<button class='btn' id='indian'>Indian</button>
+	<div id="ThreeJS" style="position: absolute; left:0px; top:0px"></div>
 	
+	<!-- put the five buttons -->	
+	<button class="btn" id='arabic'  onclick="displayText()">Arabic</button>
+	<button class='btn' id='english' onclick="displayText()">English</button>
+	<button class='btn' id='russian' onclick="displayText()">Russian</button>
+	<button class='btn' id='chinese' onclick="displayText()">Chinese</button>
+	<button class='btn' id='hindi'  onclick="displayText()">Hindi</button>
+	
+	<script src="js/Three.js"></script>
+	<script src="js/Detector.js"></script>
+	<script src="js/Stats.js"></script>
+	<script src="js/OrbitControls.js"></script>
+	<script src="js/THREEx.KeyboardState.js"></script>
+	<script src="js/THREEx.FullScreen.js"></script>
+	<script src="js/THREEx.WindowResize.js"></script>
+	
+	
+	
+	<!-- Threejs Main Program -->	
+	
+	<script>
+		// standard global variables
+		var container, scene, camera, renderer, controls, stats;
+		
+		// custom global variables
+		var cube;
+		var projector, mouse = { x: 0, y: 0 }, INTERSECTED;
+		var sprite1;
+		var canvas1, context1, texture1;
+		//To show the tooltip only after a button is clicked
+		//var startShowingText = 0;
+		init();
+		animate();
+		
+		//Functions
+		function init()
+		{
+			// SCENE
+			scene = new THREE.Scene();
+			// CAMERA
+			var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
+			var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
+			camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
+			scene.add(camera);
+			camera.position.set(0,150,400);
+			camera.lookAt(scene.position);	
+			// RENDERER
+			if ( Detector.webgl )
+				renderer = new THREE.WebGLRenderer( {antialias:true} );
+			else
+				renderer = new THREE.CanvasRenderer(); 
+			renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+			container = document.getElementById( 'ThreeJS' );
+			container.appendChild( renderer.domElement );
+			// EVENTS
+			THREEx.WindowResize(renderer, camera);
+			THREEx.FullScreen.bindKey({ charCode : 'm'.charCodeAt(0) });
+			
+			// STATS
+			stats = new Stats();
+			stats.domElement.style.position = 'absolute';
+			stats.domElement.style.bottom = '0px';
+			stats.domElement.style.zIndex = 100;
+			container.appendChild( stats.domElement );
+			// LIGHT
+			var light = new THREE.PointLight(0xffffff);
+			light.position.set(0,250,0);
+			scene.add(light);
+			
+			// SKYBOX/FOG
+			//Todo - Need to add the backgroud image here
+			var skyBoxGeometry = new THREE.CubeGeometry( 10000, 10000, 10000 );
+			var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0x9999ff, side: THREE.BackSide } );
+			var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
+			scene.add(skyBox);
+			
+			// initialize object to perform world/screen calculations
+			projector = new THREE.Projector();
+			
+			// when the mouse moves, call the given function
+			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+			
+			/////// draw text on canvas /////////
+			// create a canvas element
+			canvas1 = document.createElement('canvas');
+			context1 = canvas1.getContext('2d');
+			
+			context1.font = "Bold 20px Arial";
+			context1.fillStyle = "rgba(0,0,0,0.95)";
+			context1.fillText('Hello, world!', 0, 20);
+			
+			// canvas contents will be used for a texture
+			texture1 = new THREE.Texture(canvas1) 
+			texture1.needsUpdate = true;
+			
+			////////////////////////////////////////
+			
+			var spriteMaterial = new THREE.SpriteMaterial( { map: texture1, useScreenCoordinates: true, alignment: THREE.SpriteAlignment.topLeft } );
+			
+			sprite1 = new THREE.Sprite( spriteMaterial );
+			sprite1.scale.set(200,100,1.0);
+			sprite1.position.set( 50, 50, 0 );
+			scene.add( sprite1 );
+
+			//////////////////////////////////////////			
+		}
+		
+		function onDocumentMouseMove( event ) 
+		{
+			// the following line would stop any other event handler from firing
+			// (such as the mouse's TrackballControls)
+			// event.preventDefault();
+			// update sprite position
+			sprite1.position.set( event.clientX, event.clientY - 20, 0 );
+			
+			// update the mouse variable
+			mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+			mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+			//if(startShowingText==1)
+			//{
+				update();
+			//}
+		}
+		
+		function animate() 
+		{
+			requestAnimationFrame( animate );
+			render();
+		}
+		
+		function render() 
+		{
+			renderer.render( scene, camera );
+		}
+		
+		function displayText()
+		{
+			//startShowingText ==1;
+			update();	
+		}
+		
+		function update()
+		{
+			//Capture Mouse Location
+			var x = mouse.x;
+			var y = mouse.y;
+			
+			var message="default";
+			
+			windowWidth = window.innerWidth;
+			windowHeight = window.innerHeight;
+			
+			//Origin - English
+			if(((x>=-0.3) && (x<=0.3)) && ((y>=-0.3)&&(y<=0.3)))
+			{
+				message = "Easy come, easy go.";
+			}
+			//1st Quadrant - Chinese
+			else if(((x>=0) && (x<=1)) && ((y>=0) &&(y<=1)))
+			{
+				message = "来得容易，去得快。";
+			}
+			//2nd Quadrant - Russian
+			else if(((x<=0) && (x>=-1) && (y<=1) && (y>=0)))
+			{
+				message = "Бог дал, Бог взял.";
+			}
+			
+			//3rd Quadrant - Hindi
+			else if(((x<=1) && (x>=0)) && ((y>=-1) && (y<=0)))
+			{
+				message = "आसान में आओ, आसान जाओ।";
+			}
+			
+			//4th Quadrant - Arabic
+			else if(((x>=-1) && (x<=0)) && ((y>=-1) && (y<=0)))
+			{
+				message = "تأتي من السهل، من السهل الذهاب.";
+			}
+			
+			else
+			{
+			message="default";
+			}
+			
+						context1.clearRect(0,0,640,480);
+						//var message = "Mouse Move Test";
+						var metrics = context1.measureText(message);
+						var width = metrics.width;
+						context1.fillStyle = "rgba(0,0,0,0.95)"; // black border
+						context1.fillRect( 0,0, width+20,20+8);
+						context1.fillStyle = "rgba(255,255,255,0.95)"; // white filler
+						context1.fillRect( 2,2, width+16,20+4 );
+						context1.fillStyle = "rgba(0,0,0,1)"; // text color
+						context1.fillText( message, 4,20 );
+						texture1.needsUpdate = true;
+					
+			
+			//controls.update();
+			stats.update();
+		}
+	</script>	
 </body>
 </html>
