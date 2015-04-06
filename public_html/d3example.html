@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/d3.geo.projection.v0.min.js"></script>
+<style>
+
+  .background {
+    fill: none;
+    pointer-events: all;
+  }
+
+  #states path {
+    fill: #aaa;
+    stroke: #fff;
+    stroke-width: 1.5px;
+  }
+
+  #states path:hover {
+    stroke: red;
+  }
+
+  #states .active {
+    fill: steelblue;
+  }
+
+</style>
+<body>
+  <!--  <div id="current_proj_info"></div>-->
+  <div id="ThreeJS" style="position: absolute; left:0px; top:0px"></div>
+  <!--<div id="myDiv"></div>-->
+  <script src="js/three.js"></script>
+  <script src="js/Detector.js"></script>
+  <script src="js/Stats.js"></script>
+  <script src="js/OrbitControls.js"></script>
+  <script src="js/THREEx.KeyboardState.js"></script>
+  <script src="js/THREEx.FullScreen.js"></script>
+  <script src="js/THREEx.WindowResize.js"></script>
+
+  <script>
+
+    var width = window.innerWidth,
+    height = window.innerHeight,
+    centered;
+
+var projection = d3.geo.winkel3() // ;
+.scale(height*10)
+.translate([width, height]);
+
+var path = d3.geo.path()
+.projection(projection);
+
+/*var zoom = d3.behavior.zoom()
+.translate(projection.translate())
+.scale(projection.scale())
+.scaleExtent([height/8, 8 * height])
+.on("zoom", zoom);*/
+
+var svg = d3.select("body").append("svg")
+.attr("width", width)
+.attr("height", height);
+
+var states = svg.append("g")
+.attr("id", "states")
+.call(zoom);
+
+states.append("rect")
+.attr("class", "background")
+.attr("width", width)
+.attr("height", height);
+
+d3.json("maps/USA.geo.json", function(json) {
+  states.selectAll("path")
+  .data(json.features)
+  .enter().append("path")
+  .attr("d", path)
+  .on("click", click);
+});
+    // standard global variables
+    var container, scene, camera, renderer, controls, stats;
+
+    // custom global variables
+    var cube;
+    var projector, mouse = { x: 0, y: 0 }, INTERSECTED;
+    var sprite1;
+    var canvas1, context1, texture1;
+    //To show the tooltip only after a button is clicked
+    //var startShowingText = 0;
+    init();
+    animate();
+    //Functions
+    function init()
+    {
+      // SCENE
+      scene = new THREE.Scene();
+      // CAMERA
+      var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
+      var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
+      camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
+      scene.add(camera);
+      camera.position.set(0,150,400);
+      camera.lookAt(scene.position);
+      // RENDERER
+      if ( Detector.webgl )
+        renderer = new THREE.WebGLRenderer( {antialias:true} );
+      else
+        renderer = new THREE.CanvasRenderer();
+      renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+      container = document.getElementById( 'ThreeJS' );
+      container.appendChild( renderer.domElement );
+      // EVENTS
+      THREEx.WindowResize(renderer, camera);
+      THREEx.FullScreen.bindKey({ charCode : 'm'.charCodeAt(0) });
+
+      // STATS
+      stats = new Stats();
+      stats.domElement.style.position = 'absolute';
+      stats.domElement.style.bottom = '0px';
+      stats.domElement.style.zIndex = 100;
+      container.appendChild( stats.domElement );
+      // LIGHT
+      var light = new THREE.PointLight(0xffffff);
+      light.position.set(0,250,0);
+      scene.add(light);
+
+      // SKYBOX/FOG
+      //Todo - Need to add the backgroud image here
+      var skyBoxGeometry = new THREE.CubeGeometry( 10000, 10000, 10000 );
+      var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0x9999ff, side: THREE.BackSide } );
+      var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
+      //scene.add(skyBox);
+
+      // initialize object to perform world/screen calculations
+      projector = new THREE.Projector();
+
+      // when the mouse moves, call the given function
+      document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+      /////// draw text on canvas /////////
+      // create a canvas element
+      canvas1 = document.createElement('canvas');
+      context1 = canvas1.getContext('2d');
+
+      context1.font = "Bold 20px Arial";
+      context1.fillStyle = "rgba(0,0,0,0.95)";
+      context1.fillText('Hello, world!', 0, 20);
+
+      // canvas contents will be used for a texture
+      texture1 = new THREE.Texture(canvas1)
+      texture1.needsUpdate = true;
+
+      ////////////////////////////////////////
+
+      var spriteMaterial = new THREE.SpriteMaterial( { map: texture1, useScreenCoordinates: true, alignment: THREE.SpriteAlignment.topLeft } );
+
+      sprite1 = new THREE.Sprite( spriteMaterial );
+      sprite1.scale.set(200,100,1.0);
+      sprite1.position.set( 50, 50, 0 );
+      scene.add( sprite1 );
+
+      //////////////////////////////////////////
+    }
+    function animate()
+    {
+      requestAnimationFrame( animate );
+      render();
+    }
+
+    function render()
+    {
+      renderer.render( scene, camera );
+    }
+
+    function displayText()
+    {
+      //startShowingText ==1;
+      update();
+    }
+
+
+    function onDocumentMouseMove( event )
+    {
+      // the following line would stop any other event handler from firing
+      // (such as the mouse's TrackballControls)
+      // event.preventDefault();
+      // update sprite position
+      sprite1.position.set( event.clientX, event.clientY - 20, 0 );
+
+      // update the mouse variable
+      mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+      mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+      //if(startShowingText==1)
+      //{
+        update();
+      //}
+    }
+var ratio = window.devicePixelRatio || 1,
+    width = 960 * ratio,
+    height = 500 * ratio;
+var canvas = document.createElement('canvas');
+    var  context = canvas1.getContext('2d');
+    var graticule = d3.geo.graticule()(),
+    geometry;
+function redraw(path) {
+  context.clearRect(0, 0, width, height);
+  context.lineWidth = .5 * ratio;
+  // if (land) {
+  //   context.strokeStyle = "#000";
+  //   context.beginPath(), path(land), context.fill(), context.stroke();
+  //   context.beginPath(), path(boundaries), context.stroke();
+  // }
+  context.strokeStyle = "#999";
+  context.beginPath(), path(graticule), context.stroke();
+  context.lineWidth = 2.5 * ratio, context.strokeStyle = "#000";
+  context.beginPath(), path({type: "Sphere"}), context.stroke();
+}
+       set_projection(new Option("equirectangular", "mercator", false, false));
+      //redraw(path);
+
+
+    function click(d) {
+
+  // If the click was on the centered state or the background, re-center.
+  // Otherwise, center the clicked-on state.
+  if (!d || centered === d) {
+    projection.translate([width / 2, height / 2]);
+    centered = null;
+  } else {
+    var centroid = path.centroid(d),
+    translate = projection.translate();
+    projection.translate([
+      translate[0] - centroid[0] + width / 2,
+      translate[1] - centroid[1] + height / 2
+      ]);
+    centered = d;
+  }
+
+  states.selectAll("path")
+  .classed("active", centered && function(d) { return d === centered; });
+
+  // Transition to the new projection.
+  states.selectAll("path").transition()
+  .duration(1000)
+  .attr("d", path);
+}
+
+function set_projection(option) {
+  proj = option.value
+
+  projection = eval("d3.geo."+proj+"();");
+
+  path = d3.geo.path()
+  .projection(projection);
+
+   zoom.translate(projection.translate());
+
+  states.selectAll("path").transition()
+  .duration(500)
+  .attr("d", path);
+  var link = "https://github.com/mbostock/d3/wiki/Geo-Projections#wiki-" + proj
+  d3.selectAll("div#current_proj_info").html("Current projection: <a href=\""+link+"\">"+option.text+"</a>");
+}
+
+function projection_selected(e){
+  set_projection(e.target[e.target.selectedIndex])
+}
+
+function zoom() {
+  projection.translate(d3.event.translate).scale(d3.event.scale);
+  states.selectAll("path").attr("d", path);
+}
+
+
+function update()
+{
+      //Capture Mouse Location
+      var x = mouse.x;
+      var y = mouse.y;
+
+      var message="default";
+
+      windowWidth = window.innerWidth;
+      windowHeight = window.innerHeight;
+
+
+
+      //Origin - English
+      if(((x>=-0.3) && (x<=0.3)) && ((y>=-0.3)&&(y<=0.3)))
+      {
+        d3.json("maps/USA.geo.json", function(json) {
+          states.selectAll("path")
+          .data(json.features)
+          .enter().append("path")
+          .attr("d", path)
+          .on("click", click);
+        });
+        //redraw(path);
+        set_projection(new Option("equirectangular", "equirectangular", false, false));
+        message = "Easy come, easy go.";
+      }
+      //1st Quadrant - Chinese
+      else if(((x>=0) && (x<=1)) && ((y>=0) &&(y<=1)))
+      {
+        d3.json("maps/CHN.geo.json", function(json) {
+          states.selectAll("path")
+          .data(json.features)
+          .enter().append("path")
+          .attr("d", path)
+          .on("click", click);
+        });
+        //redraw(path);
+        set_projection(new Option("equirectangular", "equirectangular", false, false));
+        message = "来得容易，去得快。";
+      }
+      //2nd Quadrant - Russian
+      else if(((x<=0) && (x>=-1) && (y<=1) && (y>=0)))
+      {
+        d3.json("maps/RUS.geo.json", function(json) {
+          states.selectAll("path")
+          .data(json.features)
+          .enter().append("path")
+          .attr("d", path)
+          .on("click", click);
+        });
+        //redraw(path);
+        set_projection(new Option("equirectangular", "equirectangular", false, false));
+        message = "Бог дал, Бог взял.";
+      }
+
+      //3rd Quadrant - Hindi
+      else if(((x<=1) && (x>=0)) && ((y>=-1) && (y<=0)))
+      {
+        d3.json("maps/IND.geo.json", function(json) {
+          states.selectAll("path")
+          .data(json.features)
+          .enter().append("path")
+          .attr("d", path)
+          .on("click", click);
+        });
+        //redraw(path);
+       set_projection(new Option("equirectangular", "equirectangular", false, false));
+        message = "आसान में आओ, आसान जाओ।";
+      }
+
+      //4th Quadrant - Arabic
+      else if(((x>=-1) && (x<=0)) && ((y>=-1) && (y<=0)))
+      {
+        d3.json("maps/ARE.geo.json", function(json) {
+          states.selectAll("path")
+          .data(json.features)
+          .enter().append("path")
+          .attr("d", path)
+          .on("click", click);
+        });
+        //redraw(path);
+        set_projection(new Option("equirectangular", "equirectangular", false, false));
+        message = "تأتي من السهل، من السهل الذهاب.";
+      }
+
+      else
+      {
+        message="default";
+      }
+
+      context1.clearRect(0,0,640,480);
+            //var message = "Mouse Move Test";
+            var metrics = context1.measureText(message);
+            var width = metrics.width;
+            context1.fillStyle = "rgba(0,0,0,0.95)"; // black border
+            context1.fillRect( 0,0, width+20,20+8);
+            context1.fillStyle = "rgba(255,255,255,0.95)"; // white filler
+            context1.fillRect( 2,2, width+16,20+4 );
+            context1.fillStyle = "rgba(0,0,0,1)"; // text color
+            context1.fillText( message, 4,20 );
+            texture1.needsUpdate = true;
+
+
+      //controls.update();
+      stats.update();
+    }
+
+/*var newSelect = document.createElement("select");
+newSelect.id = "selectlistid"; // add some attributes
+newSelect.onchange = projection_selected; // call the somethingChanged function when a change is made
+newSelect[newSelect.length] = new Option("Aitoff","aitoff",false, false)
+newSelect[newSelect.length] = new Option("Albers equal-area conic","albers",false, false);
+newSelect[newSelect.length] = new Option("Armadillo","armadillo",false, false);
+newSelect[newSelect.length] = new Option("August conformal","august",false, false);
+newSelect[newSelect.length] = new Option("Lambert azimuthal equal-area","azimuthalEqualArea",false, false);
+newSelect[newSelect.length] = new Option("azimuthal equidistant","azimuthalEquidistant",false, false);
+newSelect[newSelect.length] = new Option("Baker Dinomic","baker",false, false);
+newSelect[newSelect.length] = new Option("Berghaus Star","berghaus",false, false);
+newSelect[newSelect.length] = new Option("Boggs eumorphic","boggs",false, false);
+newSelect[newSelect.length] = new Option("Bonne","bonne",false, false);
+newSelect[newSelect.length] = new Option("Bromley","bromley",false, false);
+newSelect[newSelect.length] = new Option("Collignon","collignon",false, false);
+newSelect[newSelect.length] = new Option("Lambert conformal conic","conicConformal",false, false);
+newSelect[newSelect.length] = new Option("conic equidistant","conicEquidistant",false, false);
+newSelect[newSelect.length] = new Option("Craig retroazimuthal","craig",false, false);
+newSelect[newSelect.length] = new Option("Craster parabolic","craster",false, false);
+newSelect[newSelect.length] = new Option("cylindrical equal-area, Gall–Peters, Hobo–Dyer, Tobler world-in-a-square","cylindricalEqualArea",false, false);
+newSelect[newSelect.length] = new Option("Eckert I","eckert1",false, false);
+newSelect[newSelect.length] = new Option("Eckert II","eckert2",false, false);
+newSelect[newSelect.length] = new Option("Eckert III","eckert3",false, false);
+newSelect[newSelect.length] = new Option("Eckert IV","eckert4",false, false);
+newSelect[newSelect.length] = new Option("Eckert V","eckert5",false, false);
+newSelect[newSelect.length] = new Option("Eckert VI","eckert6",false, false);
+newSelect[newSelect.length] = new Option("Eisenlohr conformal","eisenlohr",false, false);
+newSelect[newSelect.length] = new Option("Equirectangular (Plate Carrée)","equirectangular",false, false);
+newSelect[newSelect.length] = new Option("Fahey","fahey",false, false);
+newSelect[newSelect.length] = new Option("gnomonic","gnomonic",false, false);
+newSelect[newSelect.length] = new Option("Gringorten","gringorten",false, false);
+newSelect[newSelect.length] = new Option("Guyou hemisphere-in-a-square","guyou",false, false);
+newSelect[newSelect.length] = new Option("Hammer, Eckert–Greifendorff, quartic authalic, Briesemeister","hammer",false, false);
+newSelect[newSelect.length] = new Option("Hammer retroazimuthal","hammerRetroazimuthal",false, false);
+newSelect[newSelect.length] = new Option("HEALPix","healpix",false, false);
+newSelect[newSelect.length] = new Option("Hill eucyclic, Maurer No. 73","hill",false, false);
+newSelect[newSelect.length] = new Option("Goode homolosine","homolosine",false, false);
+newSelect[newSelect.length] = new Option("Kavrayskiy VII","kavrayskiy7",false, false);
+newSelect[newSelect.length] = new Option("Lagrange conformal","lagrange",false, false);
+newSelect[newSelect.length] = new Option("Larrivée","larrivee",false, false);
+newSelect[newSelect.length] = new Option("Laskowski tri-optimal","laskowski",false, false);
+newSelect[newSelect.length] = new Option("Littrow","littrow",false, false);
+newSelect[newSelect.length] = new Option("loximuthal","loximuthal",false, false);
+newSelect[newSelect.length] = new Option("Mercator","mercator",false, true);
+newSelect[newSelect.length] = new Option("Miller","miller",false, false);
+newSelect[newSelect.length] = new Option("Mollweide, Atlantis","mollweide",false, false);
+newSelect[newSelect.length] = new Option("McBryde–Thomas flat-polar parabolic","mtFlatPolarParabolic",false, false);
+newSelect[newSelect.length] = new Option("McBryde–Thomas flat-polar quartic","mtFlatPolarQuartic",false, false);
+newSelect[newSelect.length] = new Option("McBryde–Thomas flat-polar sinusoidal","mtFlatPolarSinusoidal",false, false);
+newSelect[newSelect.length] = new Option("Natural Earth","naturalEarth",false, false);
+newSelect[newSelect.length] = new Option("Nell–Hammer","nellHammer",false, false);
+newSelect[newSelect.length] = new Option("orthographic","orthographic",false, false);
+newSelect[newSelect.length] = new Option("Pierce quincuncial","peirceQuincuncial",false, false);
+newSelect[newSelect.length] = new Option("Polyconic","polyconic",false, false);
+newSelect[newSelect.length] = new Option("Robinson","robinson",false, false);
+newSelect[newSelect.length] = new Option("satellite (tilted perpsective)","satellite",false, false);
+newSelect[newSelect.length] = new Option("sinusoidal","sinusoidal",false, false);
+newSelect[newSelect.length] = new Option("Sinu-Mollweide","sinuMollweide",false, false);
+newSelect[newSelect.length] = new Option("stereographic","stereographic",false, false);
+newSelect[newSelect.length] = new Option("Van der Grinten","vanDerGrinten",false, false);
+newSelect[newSelect.length] = new Option("Van der Grinten II","vanDerGrinten2",false, false);
+newSelect[newSelect.length] = new Option("Van der Grinten III","vanDerGrinten3",false, false);
+newSelect[newSelect.length] = new Option("Van der Grinten IV","vanDerGrinten4",false, false);
+newSelect[newSelect.length] = new Option("Wagner IV, Putniṇš P2´","wagner4",false, false);
+newSelect[newSelect.length] = new Option("Wagner VI","wagner6",false, false);
+newSelect[newSelect.length] = new Option("Wagner VII","wagner7",false, false);
+newSelect[newSelect.length] = new Option("Wiechel","wiechel",false, false);
+newSelect[newSelect.length] = new Option("Winkel Tripel","winkel3",false, false);
+document.getElementById('myDiv').appendChild(newSelect); // myDiv is the container to hold the select list
+*/
+</script>
+</body>
+</html>
