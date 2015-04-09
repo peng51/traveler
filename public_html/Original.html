@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="http://d3js.org/d3.geo.projection.v0.min.js"></script>
+<script src="js/d3.v3.min.js"></script>
+<script src="js/d3.geo.projection.v0.min.js"></script>
 <style>
 
 .background {
@@ -20,7 +20,7 @@
 }
 
 #states .active {
-  fill: steelblue;
+  stroke: red;
 }
 
 </style>
@@ -73,10 +73,10 @@ function click(d) {
 
   // If the click was on the centered state or the background, re-center.
   // Otherwise, center the clicked-on state.
-  if (!d || centered === d) {
+  /*if (!d || centered === d) {
     projection.translate([width / 2, height / 2]);
     centered = null;
-  } else {
+  } else {*/
     var centroid = path.centroid(d),
         translate = projection.translate();
     projection.translate([
@@ -84,7 +84,7 @@ function click(d) {
       translate[1] - centroid[1] + height / 2
     ]);
     centered = d;
-  }
+//  }
 
   states.selectAll("path")
       .classed("active", centered && function(d) { return d === centered; });
@@ -135,7 +135,7 @@ function set_projection(option) {
   // zoom.translate(projection.translate());
 
   states.selectAll("path").transition()
-      .duration(1000)
+      .duration(500)
        .attr("d", path);
   /*var link = "https://github.com/mbostock/d3/wiki/Geo-Projections#wiki-" + proj
   d3.selectAll("div#current_proj_info").html("Current projection: <a href=\""+link+"\">"+option.text+"</a>");*/
