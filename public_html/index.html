@@ -11,134 +11,101 @@
 	<div id="ThreeJS" style="position: absolute; left:0px; top:0px"></div>
 
 	<!--javascript library -->	
-	<script src="js/Three.js"></script>
+	<script src="js/three.js"></script>
 	<script src="js/Detector.js"></script>
 	<script src="js/Stats.js"></script>
 	<script src="js/OrbitControls.js"></script>
 	<script src="js/THREEx.KeyboardState.js"></script>
 	<script src="js/THREEx.FullScreen.js"></script>
 	<script src="js/THREEx.WindowResize.js"></script>
-		
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+        <script src="http://d3js.org/d3.geo.projection.v0.min.js"></script>
+	
+	<!--script main function -->		
 	<script>
-		// ThreeJS global variables
+		// ThreeJS global variables for rendering the scene
 		var scene, camer, renderer;
+		// ThreeJS variables for showing text, a plane facing towards the camera in 3-D space 
+		var canvas, context, texture, sprite;
+		// when the mouse moves, call the given function
+      		document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 		// init and animate
 		initThreeJS();
 		animate();
-		
-		//Functions
+			
+		// init threeJS
 		function initThreeJS()
 		{
-			// SCENE
+			// scene
 			scene = new THREE.Scene();
-			// CAMERA
+			// camera
 			var width = window.innerWidth, height = window.innerHeight;
 			var angle = 45, aspect = width / height, near = 0.1, far = 20000;
 			camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
 			scene.add(camera);
 			camera.position.set(0, 150, 400);
 			camera.lookAt(scene.position);	
-			// RENDERER
+			// renderer
 			if ( Detector.webgl )
-				renderer = new THREE.WebGLRenderer( {antialias:true} );
+				renderer = new THREE.WebGLRenderer({antialias:true});
 			else
 				renderer = new THREE.CanvasRenderer(); 
-			renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-			
+			renderer.setSize(width, height);
+			document.body.appendChild( renderer.domElement );
+			// canvas, context, texture, sprite 	
+			canvas = document.createElement('canvas');
+      			context = canvas.getContext('2d');
+			context.font = "Bold 20px Arial";
+			context.fillStyle = "rgba(0,0,0,1)";
+			texture = new THREE.Texture(canvas);
+			texture.needsUpdate = true;
+			var spriteMaterial = new 
+				THREE.SpriteMaterial({map:texture, useScreenCoordinates:true, alignment:THREE.SpriteAlignment.topLeft});	
+			sprite = new THREE.Sprite(spriteMaterial);
+			sprite.scale.set(200,100,1.0);
+      			sprite.position.set( 50, 50, 0 ); 
+			scene.add(sprite);		
 		}
-		
-		function onDocumentMouseMove( event ) 
+
+		// animate function using ThreeJS to render new interface
+		function animate()
 		{
-			// the following line would stop any other event handler from firing
-			// (such as the mouse's TrackballControls)
-			// event.preventDefault();
-			// update sprite position
-			sprite1.position.set( event.clientX, event.clientY - 20, 0 );
-			
+			requestAnimationFrame(animate);
+  			renderer.render(scene, camera);
+		}	
+		
+		// capture mouse movement and update the ThreeJS scene 	
+		function onDocumentMouseMove(event) 
+		{
 			// update the mouse variable
-			mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-			mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-			//if(startShowingText==1)
-			//{
-				update();
-			//}
+			var mouse = {x:0, y:0};
+			mouse.x = event.clientX;
+			mouse.y = event.clientY;
+			console.log('mouse position captured: x = '  + mouse.x + ', y = ' + mouse.y);
+			update(mouse);
 		}
-		
-		function animate() 
+			
+		// update the text to show at the mouse position	
+		function update(mouse)
 		{
-			requestAnimationFrame( animate );
-			render();
-		}
-		
-		function render() 
-		{
-			renderer.render( scene, camera );
-		}
-		
-		function displayText()
-		{
-			update();	
-		}
-		
-		function update()
-		{
-			//Capture Mouse Location
-			var x = mouse.x;
-			var y = mouse.y;
-			
-			var message="default";
-			
-			windowWidth = window.innerWidth;
-			windowHeight = window.innerHeight;
-			
-			//Origin - English
-			if(((x>=-0.3) && (x<=0.3)) && ((y>=-0.3)&&(y<=0.3)))
-			{
-				message = "Easy come, easy go.";
-			}
-			//1st Quadrant - Chinese
-			else if(((x>=0) && (x<=1)) && ((y>=0) &&(y<=1)))
-			{
-				message = "来得容易，去得快。";
-			}
-			//2nd Quadrant - Russian
-			else if(((x<=0) && (x>=-1) && (y<=1) && (y>=0)))
-			{
-				message = "Бог дал, Бог взял.";
-			}
-			
-			//3rd Quadrant - Hindi
-			else if(((x<=1) && (x>=0)) && ((y>=-1) && (y<=0)))
-			{
-				message = "आसान में आओ, आसान जाओ।";
-			}
-			
-			//4th Quadrant - Arabic
-			else if(((x>=-1) && (x<=0)) && ((y>=-1) && (y<=0)))
-			{
-				message = "تأتي من السهل، من السهل الذهاب.";
-			}
-			
-			else
-			{
-			message="default";
-			}
-			
-						context1.clearRect(0,0,640,480);
-						//var message = "Mouse Move Test";
-						var metrics = context1.measureText(message);
-						var width = metrics.width;
-						context1.fillStyle = "rgba(0,0,0,0.95)"; // black border
-						context1.fillRect( 0,0, width+20,20+8);
-						context1.fillStyle = "rgba(255,255,255,0.95)"; // white filler
-						context1.fillRect( 2,2, width+16,20+4 );
-						context1.fillStyle = "rgba(0,0,0,1)"; // text color
-						context1.fillText( message, 4,20 );
-						texture1.needsUpdate = true;
-					
-			
-			//controls.update();
-			stats.update();
+			// x and y used for testing different languages
+			var x = (mouse.x / window.innerWidth) * 2 - 1;
+			var y = -(mouse.y / window.innerHeight) * 2 + 1;
+			// display the message
+			var message="test";		
+			context.clearRect(0,0,640,480);
+			var metrics = context.measureText(message);
+			var width = metrics.width;
+			// draw the textbox
+			context.fillStyle = "rgba(0,0,0,0.95)"; // black border
+            		context.fillRect( 0,0, width+20,20+8);
+            		context.fillStyle = "rgba(255,255,255,0.95)"; // white filler
+            		context.fillRect( 2,2, width+16,20+4 );
+            		context.fillStyle = "rgba(0,0,0,1)"; // text color
+            		context.fillText( message, 4,20 );
+            		texture.needsUpdate = true;
+			// update the textbox position
+			sprite.position.set(mouse.x, mouse.y - 20, 0 );
 		}
 	</script>	
 </body>
