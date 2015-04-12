@@ -27,8 +27,27 @@
 		// init and animate
 		initThreeJS();
 		animate();
+		initD3();
+	
+		// init D3
+		function initD3(){
+			var width = window.innerWidth, height = window.innerHeight;	
+			// create a svg graphic to show the maps of countries
+			var svg = d3.select("body").append("svg").attr("width",width).attr("height",height);
+			// add a projection function to move certain map to the center of the html page
+			projection = d3.geo.mercator().scale(width/6).translate([width / 2, height / 2]);
+			// the path function translates GEOJson objects into svg path data
+			var path = d3.geo.path().projection(projection);
+			// tranform the GEOJson object into svg path data and display it into html
+			d3.json("maps/USA.geo.json", function(data)
+			{
+				usa = svg.append("g").attr("id","usa");
+				usa.selectAll("path").data(data.features).enter().append("path").attr("d",path);
 			
-		// init threeJS
+			});	
+		}
+		
+		//init threeJS
 		function initThreeJS()
 		{
 			// scene
