@@ -1,3 +1,19 @@
+.background {
+	fill: none;
+	pointer-events: all;
+}
+#group path {
+	fill: #000000;
+	stroke: red;
+	stroke-width: 0.5px;
+}
+#group path:hover {
+	stroke: red;
+}
+#group .active {
+	fill: steelblue;
+}
+
 .btn {
 	display:block;
     	width: 70px;
