@@ -9,19 +9,19 @@
 
 	<body>
 		<div id="ThreeJS" style="position: absolute; left:0px; top:0px"></div>
-		
-		<!--javascript library -->	
+
+		<!--javascript library -->
 		<script src="js/three.js"></script>
 		<script src="js/Detector.js"></script>
 		<script src="js/d3.v3.min.js"></script>
 	        <script src="js/d3.geo.projection.v0.min.js"></script>
 	        <script src = "js/opentip-jquery.js"></script>
-		
-		<!--script main function -->		
+
+		<!--script main function -->
 		<script>
 			// ThreeJS global variables for rendering the scene
 			var scene, camer, renderer;
-			// ThreeJS variables for showing text, a plane facing towards the camera in 3-D space 
+			// ThreeJS variables for showing text, a plane facing towards the camera in 3-D space
 			var canvas, context, texture, sprite;
 			// when the mouse moves, call the given function
 	      		document.addEventListener( 'mousemove', onDocumentMouseMove, false );
@@ -32,10 +32,10 @@
 			initThreeJS();
 			animate();
 			//initD3();
-		
+
 			// init D3
 			function initD3(){
-				var width = window.innerWidth, height = window.innerHeight;	
+				var width = window.innerWidth, height = window.innerHeight;
 				// create a svg graphic to show the maps of countries
 				var svg = d3.select("body").append("svg").attr("width",width).attr("height",height);
 				// add a projection function to move certain map to the center of the html page
@@ -47,10 +47,10 @@
 				{
 					group = svg.append("g").attr("id","group");
 					group.selectAll("path").data(data.features).enter().append("path").attr("d",path);
-				
-				});	
+
+				});
 			}
-			
+
 			// set the center map of D3
 			function setCenterMap(country){
 				var width = window.innerWidth, height = window.innerHeight;
@@ -63,7 +63,7 @@
 					group.selectAll("path").transition().duration(300).attr("d", path);
 				});
 			}
-			
+
 			//init threeJS
 			function initThreeJS()
 			{
@@ -75,20 +75,20 @@
 				camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
 				scene.add(camera);
 				camera.position.set(0, 150, 400);
-				camera.lookAt(scene.position);	
+				camera.lookAt(scene.position);
 				// renderer
 				if ( Detector.webgl )
 					renderer = new THREE.WebGLRenderer({antialias:true});
 				else
-					renderer = new THREE.CanvasRenderer(); 
+					renderer = new THREE.CanvasRenderer();
 				renderer.setSize(width, height);
 				// set the ThreeJS scene in the same papge as the D3
 				var container = document.getElementById('ThreeJS');
 	      			container.appendChild( renderer.domElement );
-				// canvas, context, texture, sprite 	
+				// canvas, context, texture, sprite
 				canvas = document.createElement('canvas');
 				canvas.width  = 400;
-				canvas.height = 80;	
+				canvas.height = 80;
 	      			context = canvas.getContext('2d');
 				//context.font = "Bold 20px Times ";
 				//context.fillStyle = "rgba(0,0,0,1)";
@@ -106,20 +106,20 @@
 
 				texture = new THREE.Texture(canvas);
 				texture.needsUpdate = true;
-				var spriteMaterial = new 
-					THREE.SpriteMaterial({map:texture, useScreenCoordinates:true, alignment:THREE.SpriteAlignment.topLeft});	
+				var spriteMaterial = new
+					THREE.SpriteMaterial({map:texture, useScreenCoordinates:true, alignment:THREE.SpriteAlignment.topLeft});
 				sprite = new THREE.Sprite(spriteMaterial);
 				sprite.scale.set(300,100,1.0);
-	      			sprite.position.set( 50, 50, 0 ); 
-				scene.add(sprite);		
+	      			sprite.position.set( 50, 50, 0 );
+				scene.add(sprite);
 			}
-			
+
 			// animate function using ThreeJS to render new interface
 			function animate()
 			{
 				requestAnimationFrame(animate);
 	  			renderer.render(scene, camera);
-			}	
+			}
 			// A utility function to draw a rectangle with rounded corners.
 
 			function roundedRect(context,x,y,width,height,radius,text,color){
@@ -141,8 +141,8 @@
 			  context.fillStyle = "white";
 				context.fillText(text,10,25);
 			}
-			// capture mouse movement and update the ThreeJS scene 	
-			function onDocumentMouseMove(event) 
+			// capture mouse movement and update the ThreeJS scene
+			function onDocumentMouseMove(event)
 			{
 				// update the mouse variable
 				var mouse = {x:0, y:0};
@@ -151,8 +151,8 @@
 				//console.log('mouse position captured: x = '  + mouse.x + ', y = ' + mouse.y);
 				update(mouse);
 			}
-				
-			// update the text to show at the mouse position	
+
+			// update the text to show at the mouse position
 			function update(mouse){
 				// x and y used for testing different languages
 				var x = (mouse.x / window.innerWidth) * 2 - 1;
@@ -160,37 +160,55 @@
 
 				//Color of tool tip for different language
 				var color = "black";
-				
+
 							// origin - English
 	                        if(((x>=-0.3) && (x<=0.3)) && ((y>=-0.3)&&(y<=0.3))){
-	                                setCenterMap("NA"); 
-	                                message = "Easy come, easy go.";
-	                                color = "#808080"; //Gray
+	                                setCenterMap("NA");
+	                                message = "Two wrongs don't make a right";
+	                                color = "#0000FF"; //Blue
 	                        }
 	                        // 1st quadrant - Chinese
-	                        else if(((x>=0) && (x<=1)) && ((y>=0) &&(y<=1))){
+	                        else if(((x>0.3) && (x<=0.6)) && ((y>=0) &&(y<=0.3))){
+	                                setCenterMap("CHN");
+	                                 message = "两个错误不能 make a right";
+	                                 color = '#FF0000'; //Yellow
+	                        }
+
+	                        else if(((x>=0.3) && (x<=1)) && ((y>=0.3) &&(y<=1))){
+	                                setCenterMap("CHN");
+	                                 message = "Два заблуждения не 作出正确的";
+	                                 color = '#FF0000'; //Yellow
+	                        }
+
+	                        else if(((x>=0) && (x<=0.3)) && ((y>=0) &&(y<=1))){
 	                                setCenterMap("CHN");
 	                                 message = "来得容易，去得快。";
-	                                 color = '#FD0'; //Yellow
+	                                 color = '#FF0000'; //Yellow
 	                        }
 	                        // 2nd quadrant - Russian
+	                        else if(((x<=0.3) && (x>=-1) && (y<0.3) && (y>=0)))
+	                        {
+	                                setCenterMap("RUS");
+	                                 message = "two заблуждения не делают right";
+	                                 color = '#990066'; //Light Green
+	                        }
 	                        else if(((x<=0) && (x>=-1) && (y<=1) && (y>=0)))
 	                        {
 	                                setCenterMap("RUS");
-	                                 message = "Бог дал, Бог взял.";
-	                                 color = '#6C0'; //Light Green
+	                                 message = "Два заблуждения не делают право";
+	                                 color = '#990066'; //Light Green
 	                        }
 	                        // 3rd quadrant - Hindi
 	                        else if(((x<=1) && (x>=0)) && ((y>=-1) && (y<=0))){
 	                                setCenterMap("IND");
 	                                 message = "आसान में आओ, आसान जाओ।";
-	                                 color = '#09F'; //Blue
+	                                 color = '#FF9900'; //Blue
 	                        }
 	                        // 4th quadrant - Arabic
 	                        else if(((x>=-1) && (x<=0)) && ((y>=-1) && (y<=0))){
 	                                setCenterMap("ARA");
 	                                 message = "ﺕﺄﺘﻳ ﻢﻧ ﺎﻠﺴﻬﻟ، ﻢﻧ ﺎﻠﺴﻬﻟ ﺎﻟﺬﻫﺎﺑ.";
-	                                 color = '#F30';
+	                                 color = '#006600';
 	                        }
 	                        else{
 	                                 message = "test";
@@ -207,6 +225,6 @@
 				// update the textbox position
 				sprite.position.set(mouse.x, mouse.y - 20, 0 );
 			}
-		</script>	
+		</script>
 	</body>
 	</html>
