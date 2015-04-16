@@ -43,7 +43,7 @@
 				// the path function translates GEOJson objects into svg path data
 				path = d3.geo.path().projection(projection);
 				// tranform the GEOJson object into svg path data and display it into html
-				d3.json("maps/USA.geo.json", function(data)
+				d3.json("maps/NA.geo.json", function(data)
 				{
 					group = svg.append("g").attr("id","group");
 					group.selectAll("path").data(data.features).enter().append("path").attr("d",path);
@@ -163,7 +163,7 @@
 				
 							// origin - English
 	                        if(((x>=-0.3) && (x<=0.3)) && ((y>=-0.3)&&(y<=0.3))){
-	                                setCenterMap("USA"); 
+	                                setCenterMap("NA"); 
 	                                message = "Easy come, easy go.";
 	                                color = "#808080"; //Gray
 	                        }
@@ -188,7 +188,7 @@
 	                        }
 	                        // 4th quadrant - Arabic
 	                        else if(((x>=-1) && (x<=0)) && ((y>=-1) && (y<=0))){
-	                                setCenterMap("ARE");
+	                                setCenterMap("ARA");
 	                                 message = "ﺕﺄﺘﻳ ﻢﻧ ﺎﻠﺴﻬﻟ، ﻢﻧ ﺎﻠﺴﻬﻟ ﺎﻟﺬﻫﺎﺑ.";
 	                                 color = '#F30';
 	                        }
