@@ -172,13 +172,13 @@
 	                        }
 	                        // 1st quadrant - Chinese
 	                        else if(((x>0.3) && (x<=0.6)) && ((y>=0) &&(y<=0.3))){
-	                                setCenterMap("CHN","mercator");
+	                                setCenterMap("CHN","stereographic");
 	                                 message = "两个错误不能 make a right";
 	                                 color = '#FF0000'; //Yellow
 	                        }
 
 	                        else if(((x>=0.6) && (x<=1)) && ((y>=0) &&(y<=0.3))){
-	                                setCenterMap("CHN","cylindricalEqualArea");
+	                                setCenterMap("CHN","stereographic");
 	                                 message = "来得容易，去得快。";
 	                                 color = '#FF0000'; //Yellow
 	                        }
@@ -191,7 +191,7 @@
 	                        // 2nd quadrant - Russian
                           else if(((x<=0.3) && (x>=-1) && (y<=1) && (y>=0)))
                           {
-                                  setCenterMap("RUS","cylindricalEqualArea");
+                                  setCenterMap("RUS","homolosine");
                                    message = "Два заблуждения не делают право";
                                    color = '#990066'; //Light Green
                           }
@@ -204,7 +204,7 @@
 
 	                        // 3rd quadrant - Hindi
 	                        else if(((x<=1) && (x>=0)) && ((y>=-1) && (y<=0))){
-	                                setCenterMap("IND","azimuthalEqualArea");
+	                                setCenterMap("IND","mercator");
 	                                 message = "आसान में आओ, आसान जाओ।";
 	                                 color = '#FF9900'; //Blue
 	                        }
