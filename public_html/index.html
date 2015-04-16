@@ -52,8 +52,11 @@
 			}
 
 			// set the center map of D3
-			function setCenterMap(country){
+			function setCenterMap(country, project){
 				var width = window.innerWidth, height = window.innerHeight;
+        projection = eval("d3.geo."+project+"();");
+        path = d3.geo.path().projection(projection);
+        //projection = d3.geo.+project+().scale(width / 6).translate([width / 2, height / 2]);
 				d3.json("maps/"+country+".geo.json", function(data)
 				{
 					var centroid = path.centroid(data),
@@ -163,50 +166,51 @@
 
 							// origin - English
 	                        if(((x>=-0.3) && (x<=0.3)) && ((y>=-0.3)&&(y<=0.3))){
-	                                setCenterMap("NA");
+	                                setCenterMap("NA","mercator");
 	                                message = "Two wrongs don't make a right";
 	                                color = "#0000FF"; //Blue
 	                        }
 	                        // 1st quadrant - Chinese
 	                        else if(((x>0.3) && (x<=0.6)) && ((y>=0) &&(y<=0.3))){
-	                                setCenterMap("CHN");
+	                                setCenterMap("CHN","mercator");
 	                                 message = "两个错误不能 make a right";
 	                                 color = '#FF0000'; //Yellow
 	                        }
 
-	                        else if(((x>=0.3) && (x<=1)) && ((y>=0.3) &&(y<=1))){
-	                                setCenterMap("CHN");
-	                                 message = "Два заблуждения не 作出正确的";
-	                                 color = '#FF0000'; //Yellow
-	                        }
-
-	                        else if(((x>=0) && (x<=0.3)) && ((y>=0) &&(y<=1))){
-	                                setCenterMap("CHN");
+	                        else if(((x>=0.6) && (x<=1)) && ((y>=0) &&(y<=0.3))){
+	                                setCenterMap("CHN","cylindricalEqualArea");
 	                                 message = "来得容易，去得快。";
 	                                 color = '#FF0000'; //Yellow
 	                        }
+
+	                        else if(((x>=0.3) && (x<=1)) && ((y>=0) &&(y<=1))){
+	                                setCenterMap("CHN","homolosine");
+	                                 message = "Два заблуждения не 作出正确的";
+	                                 color = '#FF0000'; //Yellow
+	                        }
 	                        // 2nd quadrant - Russian
-	                        else if(((x<=0.3) && (x>=-1) && (y<0.3) && (y>=0)))
+                          else if(((x<=0.3) && (x>=-1) && (y<=1) && (y>=0)))
+                          {
+                                  setCenterMap("RUS","cylindricalEqualArea");
+                                   message = "Два заблуждения не делают право";
+                                   color = '#990066'; //Light Green
+                          }
+	                        else if(((x<=0.3) && (x>=-1) && (y<1) && (y>=0)))
 	                        {
-	                                setCenterMap("RUS");
+	                                setCenterMap("RUS","mercator");
 	                                 message = "two заблуждения не делают right";
 	                                 color = '#990066'; //Light Green
 	                        }
-	                        else if(((x<=0) && (x>=-1) && (y<=1) && (y>=0)))
-	                        {
-	                                setCenterMap("RUS");
-	                                 message = "Два заблуждения не делают право";
-	                                 color = '#990066'; //Light Green
-	                        }
+
 	                        // 3rd quadrant - Hindi
 	                        else if(((x<=1) && (x>=0)) && ((y>=-1) && (y<=0))){
-	                                setCenterMap("IND");
+	                                setCenterMap("IND","azimuthalEqualArea");
 	                                 message = "आसान में आओ, आसान जाओ।";
 	                                 color = '#FF9900'; //Blue
 	                        }
 	                        // 4th quadrant - Arabic
 	                        else if(((x>=-1) && (x<=0)) && ((y>=-1) && (y<=0))){
-	                                setCenterMap("ARA");
+	                                setCenterMap("ARA","mercator");
 	                                 message = "ﺕﺄﺘﻳ ﻢﻧ ﺎﻠﺴﻬﻟ، ﻢﻧ ﺎﻠﺴﻬﻟ ﺎﻟﺬﻫﺎﺑ.";
 	                                 color = '#006600';
 	                        }
