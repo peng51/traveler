@@ -1,0 +1,57 @@
+	<!DOCTYPE html>
+	<html>
+	<head>
+		<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+		<meta content="utf-8" http-equiv="encoding">
+	  	<title>traveler</title>
+		<link rel="stylesheet" type="text/css" href="css/tr.css">
+	</head>
+
+	<body>
+		<script src="js/d3.v3.min.js"></script>
+		<script src="js/topojson.js"></script>
+		<script src="js/datamaps.world.min.js"></script>
+		<div id="container" style="position:absolute;width:800px;height:650px;"></div>
+		
+		<!--script main function -->
+		<script>
+    			var map = new Datamap({
+				element: document.getElementById('container'),
+				 done: function(datamap) {
+            				datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
+                				//alert(geography.properties.name);
+						var area = countryToLang(geography.properties.name);
+						if (area != "none"){
+							console.log(area);	
+							var w = window.open("index.html");
+							w.center = area;
+						}
+						//window.location.href = 'index.html';
+            				});
+				}
+			});
+			
+			// tranform country name to language area
+			function countryToLang(country){
+				if (country == "China")
+					return "CHN";
+				else if (country == "Russia")
+					return "RUS";
+				else if (country == "India")
+					return "IND";
+				else if (country == "United States of America" || country == "Canada")
+					return "NA";
+				else if (country=="Algeria"||country=="Bahrain"||country=="Comoros"||country=="Djbouti"||
+						country=="Egypt"||country=="Iraq"||country=="Jordan"||country=="Kuwait"||
+						country=="Lebanon"||country=="Libya"||country=="Morocco"||country=="Oman"||
+						country=="Qatar"||country=="Saudi Arabia"||country=="Somalia"||country=="Sudan"||
+						country=="Syria"||country=="Tunisia"||country=="United Arab Emirates"||country=="Yemen")
+					return "ARA";	
+				else
+					return "none"
+
+			}
+				
+		</script>
+	</body>
+	</html>

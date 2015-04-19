@@ -24,13 +24,16 @@
 			// ThreeJS variables for showing text, a plane facing towards the camera in 3-D space
 			var canvas, context, texture, sprite;
 			// when the mouse moves, call the given function
-	      		document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+	      		//document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 			// D3 variables for projecting the maps
 			var projection, path, group;
+			//var center = ""; // the initial center for the map
 			// init and animate
 			initD3();
 			initThreeJS();
 			animate();
+			// when the mouse moves, call the given function
+                        document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 			//initD3();
 
 			// init D3
@@ -43,10 +46,16 @@
 				// the path function translates GEOJson objects into svg path data
 				path = d3.geo.path().projection(projection);
 				// tranform the GEOJson object into svg path data and display it into html
-				d3.json("maps/NA.geo.json", function(data)
+				console.log(window.center);
+				d3.json("maps/" + window.center + ".geo.json", function(data)
 				{
 					group = svg.append("g").attr("id","group");
+					//group.selectAll("path").data(data.features).enter().append("path").attr("d",path);
+					var centroid = path.centroid(data),
+					translate = projection.translate();
+					projection.translate([translate[0] - centroid[0] + width / 2, translate[1] - centroid[1] + height / 2]);
 					group.selectAll("path").data(data.features).enter().append("path").attr("d",path);
+					//group.selectAll("path").transition().duration(300).attr("d", path);
 
 				});
 			}
