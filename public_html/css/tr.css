@@ -3,12 +3,13 @@
 	pointer-events: all;
 }
 #group path {
-	fill: #000000;
-	stroke: red;
-	stroke-width: 0.5px;
+	fill: black;
+	stroke: white;
+	stroke-width: 0.8px;
+  opacity: 0.8;
 }
 #group path:hover {
-	stroke: red;
+	stroke: white;
 }
 #group .active {
 	fill: steelblue;
@@ -74,3 +75,11 @@
 }
 
 
+#canvas-container {
+   width: 100%;
+   text-align:center;
+}
+
+canvas {
+   display: inline;
+}
