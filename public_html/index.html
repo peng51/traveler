@@ -98,7 +98,7 @@
 						}
 
 						// A utility function to draw a rectangle with rounded corners.
-						function roundedRect(context,x,y,width,height,radius,text,color){
+						function roundedRect(context,x,y,width,height,radius,text1,text2,color1,color2){
 						  context.beginPath();
 						  context.moveTo(x,y+radius);
 						  context.lineTo(x,y+height-radius);
@@ -116,14 +116,30 @@
 
 							// Create gradient
 							var gradient = context.createLinearGradient(0, 0, canvas.width, 0);
-							gradient.addColorStop("0", color);
-							gradient.addColorStop("0.5", color);
-							gradient.addColorStop("1.0", color);
+							gradient.addColorStop("0", color1);
+							gradient.addColorStop("0.5", color1);
+							gradient.addColorStop("1.0", color1);
 							
 							// Fill with gradient
 							context.font="30px Georgia"
 							context.fillStyle = gradient;
-							context.fillText(text, 10, 25);
+							context.fillText(text1, 10, 25);
+
+							var text1Length = context.measureText(text1);
+				            var width = text1Length.width;
+
+
+				            // Create gradient
+							var gradient = context.createLinearGradient(0, 0, canvas.width, 0);
+							gradient.addColorStop("0", color2);
+							gradient.addColorStop("0.5", color2);
+							gradient.addColorStop("1.0", color2);
+							
+							// Fill with gradient
+							context.font="30px Georgia"
+							context.fillStyle = gradient;
+							context.fillText(text2, width+10, 25);
+
 						}
 
 						// capture mouse movement and update the ThreeJS scene
@@ -193,58 +209,73 @@
 										// origin
 				                        if(((x>=-0.3) && (x<=0.3)) && ((y>=-0.3)&&(y<=0.3))){
 				                                setCenterMap(centre,"mercator");
-				                                message = "Two wrongs don't make a right";
-				                                color = "#1E90FF"//Blue
+				                                message1 = "Two wrongs don't make a right";
+				                                message2 = "";
+				                                color1 = "#1E90FF"//Blue
+				                                color2 = "#1E90FF";
 				                        }
 				                        // 1st quadrant
 				                        else if(((x>0.3) && (x<=0.6)) && ((y>=0) &&(y<=0.3))){
 				                                setCenterMap(firstQuadrant,"stereographic");
-				                                 message = "两个错误不能 make a right";
-				                         		color = "#FF0000"; //Red
+				                                 message1 = "两个错误不能";
+				                                 message2 = "make a right";
+				                         		color1 = "#FF0000"; //Red
+				                         		color2 = "#1E90FF";
 				                        }
 
 				                        else if(((x>=0.6) && (x<=1)) && ((y>=0) &&(y<=0.3))){
 				                                setCenterMap(firstQuadrant,"stereographic");
-				                                 message = "来得容易，去得快。";
-				                                 color = "#FF0000"; //Red
+				                                 message1 = "来得容易，去得快。";
+				                                 message2 = "";
+				                                 color1 = "#FF0000"; //Red
+				                                 color2 = "#FF0000";
 				                        }
 
 				                        else if(((x>=0.3) && (x<=1)) && ((y>=0) &&(y<=1))){
 				                                setCenterMap(firstQuadrant,"homolosine");
-				                                 message = "Два заблуждения не 作出正确的";
-				                                color ="#800000";//Maroon
+				                                 message1 = "Два заблуждения не";
+				                                 message2 = "作出正确的";
+				                                color1 ="#800000";//Maroon
+				                                color2 = "#FF0000"
 				                        }
 				                        // 2nd quadrant
 			                          else if(((x<=0.3) && (x>=-1) && (y<=1) && (y>=0)))
 			                          {
 			                                  setCenterMap(secondQuadrant,"homolosine");
-			                                   message = "Два заблуждения не делают право";
-			                                   color ="#800000";
+			                                   message1 = "Два заблуждения не делают право";
+			                                   message2 = "";
+			                                   color1 ="#800000";
+			                                   color2 = "#800000";
 			                          }
 				                        else if(((x<=0.3) && (x>=-1) && (y<1) && (y>=0)))
 				                        {
 				                                setCenterMap(secondQuadrant,"mercator");
-				                                 message = "two заблуждения не делают right";
-				                                 color ="#800000";
+				                                 message1 = "two заблуждения не делают ";
+				                                 message2 = "right";
+				                                 color1 ="#800000";
+				                                 color2 = "1E90FF";
 				                        }
 
 				                         // 3rd quadrant
 				                        else if(((x>=-1) && (x<=0)) && ((y>=-1) && (y<=0)))
 				                        {
 				                                setCenterMap(thirdQuadrant,"mercator");
-				                                 message = "ﺕﺄﺘﻳ ﻢﻧ ﺎﻠﺴﻬﻟ، ﻢﻧ ﺎﻠﺴﻬﻟ ﺎﻟﺬﻫﺎﺑ.";
+				                                 message1 = "ﺕﺄﺘﻳ ﻢﻧ ﺎﻠﺴﻬﻟ، ﻢﻧ ﺎﻠﺴﻬﻟ ﺎﻟﺬﻫﺎﺑ.";
+				                                 message2 = "";
 				                                 //color = '#006600';
-				                                 color = '#990066'; //Light Green
+				                                 color1 = '#990066'; //Light Green
+				                                 color2 = "#990066";
 				                        }
 
 				                        // 4th quadrant
 				                        else if(((x<=1) && (x>=0)) && ((y>=-1) && (y<=0)))
 				                        {
 				                                setCenterMap(fourthQuadrant,"mercator");
-				                                 message = "आसान में आओ, आसान जाओ।";
-				                                 
+				                                 message1 = "आसान में आओ, आसान जाओ।";
+				                                 message2 = "";
 
-				                                  color = '#FF0000'; //Yellow
+				                                  color1 = '#FF0000'; //Yellow
+				                                  color2 = "#FF0000";
 				                        }
 				                       
 				                        else{
@@ -253,10 +284,16 @@
 
 							//Clear the textbox
 							context.clearRect(0,0,640,600);
-				            var metrics = context.measureText(message);
-				            var width = metrics.width;
+				            var metrics1 = context.measureText(message1);
+				            var width1 = metrics1.width;
+
+				            var metrics2 = context.measureText(message2);
+				            var width2 = metrics2.width;
+
+				            var totalWidth = width1+width2;
+
 				            //Draw the textbox
-				            roundedRect(context,x,y,width + 20,20+10,15,message,color);
+				            roundedRect(context,x,y,totalWidth + 20,20+10,15,message1,message2,color1,color2);
 
 						}
 					</script>
