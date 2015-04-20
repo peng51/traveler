@@ -1,258 +1,264 @@
-			<!DOCTYPE html>
-			<html>
-			<head>
-				<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-				<meta content="utf-8" http-equiv="encoding">
-			  	<title>Walk with the miles</title>
-				<link rel="stylesheet" type="text/css" href="css/tr.css">
-			</head>
+				<!DOCTYPE html>
+				<html>
+				<head>
+					<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+					<meta content="utf-8" http-equiv="encoding">
+				  	<title>Walk with the miles</title>
+					<link rel="stylesheet" type="text/css" href="css/tr.css">
+				</head>
 
-			<body background="image/Background-gray.jpg">
-				<div id="canvas-container">
-		   		<canvas id="myCanvas" width="500" height="40">
-				</div>
+				<body background="image/Background-gray.jpg">
+					<div id="canvas-container">
+			   		<canvas id="myCanvas" width="500" height="40">
+					</div>
 
-				
 					
-
-				<!--javascript library -->
-				<script src="js/three.js"></script>
-				<script src="js/Detector.js"></script>
-				<script src="js/d3.v3.min.js"></script>
-			        <script src="js/d3.geo.projection.v0.min.js"></script>
-			        <script src = "js/opentip-jquery.js"></script>
-
-				<!--script main function -->
-				<script>
-					
-					// Canvas for displaying the poem
-					var canvas, context;
-
-					//Varibles holding the quadrants
-					var firstQuadrant,secondQuadrant,thirdQuadrant,fourthQuadrant, centre;
-					var source ="NA"; //Source is english by default
-					// when the mouse moves, call the given function
-			      		document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-					// D3 variables for projecting the maps
-					var projection, path, group;
-					
-					canvas = document.getElementById('myCanvas');
-			      	context = canvas.getContext('2d');
-					
-					initD3();
-					setQuadrants(source);
-
-
-					// init D3
-					function initD3(){
-						var width = window.innerWidth, height = window.innerHeight;
-						var color = d3.scale.category10();
-						// create a svg graphic to show the maps of countries
-						var svg = d3.select("body").append("svg").attr("width",width).attr("height",height);
-						// add a projection function to move certain map to the center of the html page
-						projection = d3.geo.mercator().scale(width / 6).translate([width / 2, height / 2]);
-						// the path function translates GEOJson objects into svg path data
-						path = d3.geo.path().projection(projection);
-						// tranform the GEOJson object into svg path data and display it into html
-						d3.json("maps/NA.geo.json", function(data)
-						{
-							group = svg.append("g").attr("id","group");
-							group.selectAll("path").data(data.features).enter().append("path").attr("d",path);
-
-						});
-					}
-
-					// set the center map of D3
-					function setCenterMap(country, project){
-						var width = window.innerWidth, height = window.innerHeight;
-						var color = d3.scale.category10();
-				        projection = eval("d3.geo."+project+"();");
-				        path = d3.geo.path().projection(projection);
-				        
-								d3.json("maps/"+country+".geo.json", function(data)
-								{
-									var centroid = path.centroid(data),
-									translate = projection.translate();								
-
-									/*if(country=="NA")
-										projection.scale(width/6);
-									else							
-										projection.scale(width/3);*/
-
-									projection.translate([translate[0] - centroid[0] + width / 2, translate[1] - centroid[1] + height / 2]);
-									//Changing the scaling for US, as the country is bigger than others
-									if(country == "RUS" || country =="ARA")
-										projection.scale(width/3);
-									else							
-										projection.scale(width/6);
-									//projection.scale(width/6);
-									group.selectAll("path").data(data.features).enter().append("path").attr("d",path);
-									group.selectAll("path").transition().duration(300).attr("d", path);
-								});
-					}
-
-					// A utility function to draw a rectangle with rounded corners.
-					function roundedRect(context,x,y,width,height,radius,text,color){
-					  context.beginPath();
-					  context.moveTo(x,y+radius);
-					  context.lineTo(x,y+height-radius);
-					  context.quadraticCurveTo(x,y+height,x+radius,y+height);
-					  context.lineTo(x+width-radius,y+height);
-					  context.quadraticCurveTo(x+width,y+height,x+width,y+height-radius);
-					  context.lineTo(x+width,y+radius);
-					  context.quadraticCurveTo(x+width,y,x+width-radius,y);
-					  context.lineTo(x+radius,y);
-					  context.quadraticCurveTo(x,y,x,y+radius);
-					  context.strokeStyle = "rgba(255, 255, 255, 0.5)";
-					  context.stroke();
-					  context.fillStyle = "rgba(255, 255, 255, 0.5)";
-					  context.fill();
-
-						// Create gradient
-						var gradient = context.createLinearGradient(0, 0, canvas.width, 0);
-						gradient.addColorStop("0", color);
-						gradient.addColorStop("0.5", color);
-						gradient.addColorStop("1.0", color);
 						
-						// Fill with gradient
-						context.font="30px Georgia"
-						context.fillStyle = gradient;
-						context.fillText(text, 10, 25);
-					}
 
-					// capture mouse movement and update the ThreeJS scene
-					function onDocumentMouseMove(event)
-					{
-						// update the mouse variable
-						var mouse = {x:0, y:0};
-						mouse.x = event.clientX;
-						mouse.y = event.clientY;
-						//console.log('mouse position captured: x = '  + mouse.x + ', y = ' + mouse.y);
-						update(mouse);
-					}
-					
-					function setQuadrants(source)
-					{
-						switch(source)
-						{
-							case "NA":
-								firstQuadrant = "CHN";
-								secondQuadrant="RUS";
-								thirdQuadrant = "ARA";
-								fourthQuadrant = "IND";
-								centre = "NA";
-								break;
-							case "CHN":
-								firstQuadrant = "RUS";
-								secondQuadrant="NA";
-								thirdQuadrant = "ARA";
-								fourthQuadrant = "IND";
-								centre = "CHN";
-								break;
-							case "RUS":
-								firstQuadrant = "CHN";
-								secondQuadrant="NA";
-								thirdQuadrant = "ARA";
-								fourthQuadrant = "IND";
-								centre = "RUS";
-								break;
-							case "ARA":
-								firstQuadrant = "CHN";
-								secondQuadrant="RUS";
-								thirdQuadrant = "NA";
-								fourthQuadrant = "IND";
-								centre = "ARA";
-								break;
-							case "IND":
-								firstQuadrant = "CHN";
-								secondQuadrant="RUS";
-								thirdQuadrant = "NA";
-								fourthQuadrant = "ARA";
-								centre = "IND";
-								break;
+					<!--javascript library -->
+					<script src="js/three.js"></script>
+					<script src="js/Detector.js"></script>
+					<script src="js/d3.v3.min.js"></script>
+				        <script src="js/d3.geo.projection.v0.min.js"></script>
+				        <script src = "js/opentip-jquery.js"></script>
+
+					<!--script main function -->
+					<script>
+						
+						// Canvas for displaying the poem
+						var canvas, context;
+
+						//Varibles holding the quadrants
+						var firstQuadrant,secondQuadrant,thirdQuadrant,fourthQuadrant, centre;
+						var source ="NA"; //Source is english by default
+						// when the mouse moves, call the given function
+				      		document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+						// D3 variables for projecting the maps
+						var projection, path, group;
+						
+						canvas = document.getElementById('myCanvas');
+				      	context = canvas.getContext('2d');
+						
+						initD3();
+						setQuadrants(source);
+
+
+						// init D3
+						function initD3(){
+							var width = window.innerWidth, height = window.innerHeight;
+							var color = d3.scale.category10();
+							// create a svg graphic to show the maps of countries
+							var svg = d3.select("body").append("svg").attr("width",width).attr("height",height);
+							// add a projection function to move certain map to the center of the html page
+							projection = d3.geo.mercator().scale(width / 6).translate([width / 2, height / 2]);
+							// the path function translates GEOJson objects into svg path data
+							path = d3.geo.path().projection(projection);
+							// tranform the GEOJson object into svg path data and display it into html
+							d3.json("maps/NA.geo.json", function(data)
+							{
+								group = svg.append("g").attr("id","group");
+								group.selectAll("path").data(data.features).enter().append("path").attr("d",path);
+
+							});
 						}
 
-					}
+						// set the center map of D3
+						function setCenterMap(country, project){
+							var width = window.innerWidth; 
+							var height = 400;
+							
+									d3.json("maps/"+country+".geo.json", function(data)
+									{
+										// create a first guess for the projection
+									      var center = d3.geo.centroid(data)
+									      var scale  = 150;
+									      var offset = [width/2, height/2];
+
+											projection = eval("d3.geo."+project+"();").scale(scale).center(center).translate(offset);
+						        			path = d3.geo.path().projection(projection);
+
+					        				// using the path determine the bounds of the current map and use 
+									      	// these to determine better values for the scale and translation
+											      var bounds  = path.bounds(data);
+											      var hscale  = scale*width  / (bounds[1][0] - bounds[0][0]);
+											      var vscale  = scale*height / (bounds[1][1] - bounds[0][1]);
+											      var scale   = (hscale < vscale) ? hscale : vscale;
+											      var offset  = [width - (bounds[0][0] + bounds[1][0])/2,
+											                        height - (bounds[0][1] + bounds[1][1])/2];
+
+									     projection = eval("d3.geo."+project+"();")
+	        												.center(center).scale(scale).translate(offset);;
+									     path = path.projection(projection);
 
 
+									     group.selectAll("path").data(data.features).enter().append("path").attr("d",path);
+									     group.selectAll("path").transition().duration(300).attr("d", path);
+										
+									});
+						}
 
-					// update the text to show at the mouse position
-					function update(mouse){
-						// x and y used for testing different languages
-						var x = (mouse.x / window.innerWidth) * 2 - 1;
-						var y = -(mouse.y / window.innerHeight) * 2 + 1;
+						// A utility function to draw a rectangle with rounded corners.
+						function roundedRect(context,x,y,width,height,radius,text,color){
+						  context.beginPath();
+						  context.moveTo(x,y+radius);
+						  context.lineTo(x,y+height-radius);
+						  context.quadraticCurveTo(x,y+height,x+radius,y+height);
+						  context.lineTo(x+width-radius,y+height);
+						  context.quadraticCurveTo(x+width,y+height,x+width,y+height-radius);
+						  context.lineTo(x+width,y+radius);
+						  context.quadraticCurveTo(x+width,y,x+width-radius,y);
+						  context.lineTo(x+radius,y);
+						  context.quadraticCurveTo(x,y,x,y+radius);
+						  context.strokeStyle = "rgba(255, 255, 255, 0.5)";
+						  context.stroke();
+						  context.fillStyle = "rgba(255, 255, 255, 0.5)";
+						  context.fill();
 
+							// Create gradient
+							var gradient = context.createLinearGradient(0, 0, canvas.width, 0);
+							gradient.addColorStop("0", color);
+							gradient.addColorStop("0.5", color);
+							gradient.addColorStop("1.0", color);
+							
+							// Fill with gradient
+							context.font="30px Georgia"
+							context.fillStyle = gradient;
+							context.fillText(text, 10, 25);
+						}
+
+						// capture mouse movement and update the ThreeJS scene
+						function onDocumentMouseMove(event)
+						{
+							// update the mouse variable
+							var mouse = {x:0, y:0};
+							mouse.x = event.clientX;
+							mouse.y = event.clientY;
+							//console.log('mouse position captured: x = '  + mouse.x + ', y = ' + mouse.y);
+							update(mouse);
+						}
 						
+						function setQuadrants(source)
+						{
+							switch(source)
+							{
+								case "NA":
+									firstQuadrant = "CHN";
+									secondQuadrant="RUS";
+									thirdQuadrant = "ARA";
+									fourthQuadrant = "IND";
+									centre = "NA";
+									break;
+								case "CHN":
+									firstQuadrant = "RUS";
+									secondQuadrant="NA";
+									thirdQuadrant = "ARA";
+									fourthQuadrant = "IND";
+									centre = "CHN";
+									break;
+								case "RUS":
+									firstQuadrant = "CHN";
+									secondQuadrant="NA";
+									thirdQuadrant = "ARA";
+									fourthQuadrant = "IND";
+									centre = "RUS";
+									break;
+								case "ARA":
+									firstQuadrant = "CHN";
+									secondQuadrant="RUS";
+									thirdQuadrant = "NA";
+									fourthQuadrant = "IND";
+									centre = "ARA";
+									break;
+								case "IND":
+									firstQuadrant = "CHN";
+									secondQuadrant="RUS";
+									thirdQuadrant = "NA";
+									fourthQuadrant = "ARA";
+									centre = "IND";
+									break;
+							}
 
-									// origin
-			                        if(((x>=-0.3) && (x<=0.3)) && ((y>=-0.3)&&(y<=0.3))){
-			                                setCenterMap(centre,"mercator");
-			                                message = "Two wrongs don't make a right";
-			                                color = "#1E90FF"//Blue
-			                        }
-			                        // 1st quadrant
-			                        else if(((x>0.3) && (x<=0.6)) && ((y>=0) &&(y<=0.3))){
-			                                setCenterMap(firstQuadrant,"stereographic");
-			                                 message = "两个错误不能 make a right";
-			                         		color = "#FF0000"; //Red
-			                        }
+						}
 
-			                        else if(((x>=0.6) && (x<=1)) && ((y>=0) &&(y<=0.3))){
-			                                setCenterMap(firstQuadrant,"stereographic");
-			                                 message = "来得容易，去得快。";
-			                                 color = "#FF0000"; //Red
-			                        }
 
-			                        else if(((x>=0.3) && (x<=1)) && ((y>=0) &&(y<=1))){
-			                                setCenterMap(firstQuadrant,"homolosine");
-			                                 message = "Два заблуждения не 作出正确的";
-			                                color ="#800000";//Maroon
-			                        }
-			                        // 2nd quadrant
-		                          else if(((x<=0.3) && (x>=-1) && (y<=1) && (y>=0)))
-		                          {
-		                                  setCenterMap(secondQuadrant,"homolosine");
-		                                   message = "Два заблуждения не делают право";
-		                                   color ="#800000";
-		                          }
-			                        else if(((x<=0.3) && (x>=-1) && (y<1) && (y>=0)))
-			                        {
-			                                setCenterMap(secondQuadrant,"mercator");
-			                                 message = "two заблуждения не делают right";
-			                                 color ="#800000";
-			                        }
 
-			                         // 3rd quadrant
-			                        else if(((x>=-1) && (x<=0)) && ((y>=-1) && (y<=0)))
-			                        {
-			                                setCenterMap(thirdQuadrant,"mercator");
-			                                 message = "ﺕﺄﺘﻳ ﻢﻧ ﺎﻠﺴﻬﻟ، ﻢﻧ ﺎﻠﺴﻬﻟ ﺎﻟﺬﻫﺎﺑ.";
-			                                 //color = '#006600';
-			                                 color = '#990066'; //Light Green
-			                        }
+						// update the text to show at the mouse position
+						function update(mouse){
+							// x and y used for testing different languages
+							var x = (mouse.x / window.innerWidth) * 2 - 1;
+							var y = -(mouse.y / window.innerHeight) * 2 + 1;
 
-			                        // 4th quadrant
-			                        else if(((x<=1) && (x>=0)) && ((y>=-1) && (y<=0)))
-			                        {
-			                                setCenterMap(fourthQuadrant,"mercator");
-			                                 message = "आसान में आओ, आसान जाओ।";
-			                                 
+							
 
-			                                  color = '#FF0000'; //Yellow
-			                        }
-			                       
-			                        else{
-			                                 message = "test";
-			                        }
+										// origin
+				                        if(((x>=-0.3) && (x<=0.3)) && ((y>=-0.3)&&(y<=0.3))){
+				                                setCenterMap(centre,"mercator");
+				                                message = "Two wrongs don't make a right";
+				                                color = "#1E90FF"//Blue
+				                        }
+				                        // 1st quadrant
+				                        else if(((x>0.3) && (x<=0.6)) && ((y>=0) &&(y<=0.3))){
+				                                setCenterMap(firstQuadrant,"stereographic");
+				                                 message = "两个错误不能 make a right";
+				                         		color = "#FF0000"; //Red
+				                        }
 
-						//Clear the textbox
-						context.clearRect(0,0,640,600);
-			            var metrics = context.measureText(message);
-			            var width = metrics.width;
-			            //Draw the textbox
-			            roundedRect(context,x,y,width + 20,20+10,15,message,color);
+				                        else if(((x>=0.6) && (x<=1)) && ((y>=0) &&(y<=0.3))){
+				                                setCenterMap(firstQuadrant,"stereographic");
+				                                 message = "来得容易，去得快。";
+				                                 color = "#FF0000"; //Red
+				                        }
 
-					}
-				</script>
-			</body>
-			</html>
+				                        else if(((x>=0.3) && (x<=1)) && ((y>=0) &&(y<=1))){
+				                                setCenterMap(firstQuadrant,"homolosine");
+				                                 message = "Два заблуждения не 作出正确的";
+				                                color ="#800000";//Maroon
+				                        }
+				                        // 2nd quadrant
+			                          else if(((x<=0.3) && (x>=-1) && (y<=1) && (y>=0)))
+			                          {
+			                                  setCenterMap(secondQuadrant,"homolosine");
+			                                   message = "Два заблуждения не делают право";
+			                                   color ="#800000";
+			                          }
+				                        else if(((x<=0.3) && (x>=-1) && (y<1) && (y>=0)))
+				                        {
+				                                setCenterMap(secondQuadrant,"mercator");
+				                                 message = "two заблуждения не делают right";
+				                                 color ="#800000";
+				                        }
+
+				                         // 3rd quadrant
+				                        else if(((x>=-1) && (x<=0)) && ((y>=-1) && (y<=0)))
+				                        {
+				                                setCenterMap(thirdQuadrant,"mercator");
+				                                 message = "ﺕﺄﺘﻳ ﻢﻧ ﺎﻠﺴﻬﻟ، ﻢﻧ ﺎﻠﺴﻬﻟ ﺎﻟﺬﻫﺎﺑ.";
+				                                 //color = '#006600';
+				                                 color = '#990066'; //Light Green
+				                        }
+
+				                        // 4th quadrant
+				                        else if(((x<=1) && (x>=0)) && ((y>=-1) && (y<=0)))
+				                        {
+				                                setCenterMap(fourthQuadrant,"mercator");
+				                                 message = "आसान में आओ, आसान जाओ।";
+				                                 
+
+				                                  color = '#FF0000'; //Yellow
+				                        }
+				                       
+				                        else{
+				                                 message = "test";
+				                        }
+
+							//Clear the textbox
+							context.clearRect(0,0,640,600);
+				            var metrics = context.measureText(message);
+				            var width = metrics.width;
+				            //Draw the textbox
+				            roundedRect(context,x,y,width + 20,20+10,15,message,color);
+
+						}
+					</script>
+				</body>
+				</html>
