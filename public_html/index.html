@@ -110,9 +110,9 @@
 
 						// Create gradient
 						var gradient = context.createLinearGradient(0, 0, canvas.width, 0);
-						gradient.addColorStop("0", "magenta");
-						gradient.addColorStop("0.5", "blue");
-						gradient.addColorStop("1.0", "red");
+						gradient.addColorStop("0", color);
+						gradient.addColorStop("0.5", color);
+						gradient.addColorStop("1.0", color);
 						
 						// Fill with gradient
 						context.font="30px Georgia"
@@ -188,38 +188,38 @@
 			                        if(((x>=-0.3) && (x<=0.3)) && ((y>=-0.3)&&(y<=0.3))){
 			                                setCenterMap(centre,"mercator");
 			                                message = "Two wrongs don't make a right";
-			                                
+			                                color = "#1E90FF"//Blue
 			                        }
 			                        // 1st quadrant
 			                        else if(((x>0.3) && (x<=0.6)) && ((y>=0) &&(y<=0.3))){
 			                                setCenterMap(firstQuadrant,"stereographic");
 			                                 message = "两个错误不能 make a right";
-			                                 
+			                         		color = "#FF0000"; //Red
 			                        }
 
 			                        else if(((x>=0.6) && (x<=1)) && ((y>=0) &&(y<=0.3))){
 			                                setCenterMap(firstQuadrant,"stereographic");
 			                                 message = "来得容易，去得快。";
-			                                 color = '#FF0000'; //Yellow
+			                                 color = "#FF0000"; //Red
 			                        }
 
 			                        else if(((x>=0.3) && (x<=1)) && ((y>=0) &&(y<=1))){
 			                                setCenterMap(firstQuadrant,"homolosine");
 			                                 message = "Два заблуждения не 作出正确的";
-			                                 color = '#FF0000'; //Yellow
+			                                color ="#800000";//Maroon
 			                        }
 			                        // 2nd quadrant
 		                          else if(((x<=0.3) && (x>=-1) && (y<=1) && (y>=0)))
 		                          {
 		                                  setCenterMap(secondQuadrant,"homolosine");
 		                                   message = "Два заблуждения не делают право";
-		                                   color = '#990066'; //Light Green
+		                                   color ="#800000";
 		                          }
 			                        else if(((x<=0.3) && (x>=-1) && (y<1) && (y>=0)))
 			                        {
 			                                setCenterMap(secondQuadrant,"mercator");
 			                                 message = "two заблуждения не делают right";
-			                                 color = '#990066'; //Light Green
+			                                 color ="#800000";
 			                        }
 
 			                         // 3rd quadrant
@@ -227,7 +227,8 @@
 			                        {
 			                                setCenterMap(thirdQuadrant,"mercator");
 			                                 message = "ﺕﺄﺘﻳ ﻢﻧ ﺎﻠﺴﻬﻟ، ﻢﻧ ﺎﻠﺴﻬﻟ ﺎﻟﺬﻫﺎﺑ.";
-			                                 color = '#006600';
+			                                 //color = '#006600';
+			                                 color = '#990066'; //Light Green
 			                        }
 
 			                        // 4th quadrant
@@ -235,7 +236,9 @@
 			                        {
 			                                setCenterMap(fourthQuadrant,"mercator");
 			                                 message = "आसान में आओ, आसान जाओ।";
-			                                 color = '#FF9900'; //Blue
+			                                 
+
+			                                  color = '#FF0000'; //Yellow
 			                        }
 			                       
 			                        else{
