@@ -7,7 +7,7 @@
 				<link rel="stylesheet" type="text/css" href="css/tr.css">
 			</head>
 
-			<body background="image/Background4.jpg">
+			<body background="image/Background-gray.jpg">
 				<div id="canvas-container">
 		   		<canvas id="myCanvas" width="500" height="40">
 				</div>
@@ -25,8 +25,12 @@
 				<!--script main function -->
 				<script>
 					
-					// ThreeJS variables for showing text, a plane facing towards the camera in 3-D space
+					// Canvas for displaying the poem
 					var canvas, context;
+
+					//Varibles holding the quadrants
+					var firstQuadrant,secondQuadrant,thirdQuadrant,fourthQuadrant, centre;
+					var source ="NA"; //Source is english by default
 					// when the mouse moves, call the given function
 			      		document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 					// D3 variables for projecting the maps
@@ -36,6 +40,9 @@
 			      	context = canvas.getContext('2d');
 					
 					initD3();
+					setQuadrants(source);
+
+
 					// init D3
 					function initD3(){
 						var width = window.innerWidth, height = window.innerHeight;
@@ -66,13 +73,19 @@
 								{
 									var centroid = path.centroid(data),
 									translate = projection.translate();								
-									projection.translate([translate[0] - centroid[0] + width / 2, translate[1] - centroid[1] + height / 2]);
-									//Changing the scaling for US, as the country is bigger than others
-									if(country=="NA")
+
+									/*if(country=="NA")
 										projection.scale(width/6);
 									else							
-										projection.scale(width/3);
+										projection.scale(width/3);*/
 
+									projection.translate([translate[0] - centroid[0] + width / 2, translate[1] - centroid[1] + height / 2]);
+									//Changing the scaling for US, as the country is bigger than others
+									if(country == "RUS" || country =="ARA")
+										projection.scale(width/3);
+									else							
+										projection.scale(width/6);
+									//projection.scale(width/6);
 									group.selectAll("path").data(data.features).enter().append("path").attr("d",path);
 									group.selectAll("path").transition().duration(300).attr("d", path);
 								});
@@ -118,65 +131,113 @@
 						update(mouse);
 					}
 					
+					function setQuadrants(source)
+					{
+						switch(source)
+						{
+							case "NA":
+								firstQuadrant = "CHN";
+								secondQuadrant="RUS";
+								thirdQuadrant = "ARA";
+								fourthQuadrant = "IND";
+								centre = "NA";
+								break;
+							case "CHN":
+								firstQuadrant = "RUS";
+								secondQuadrant="NA";
+								thirdQuadrant = "ARA";
+								fourthQuadrant = "IND";
+								centre = "CHN";
+								break;
+							case "RUS":
+								firstQuadrant = "CHN";
+								secondQuadrant="NA";
+								thirdQuadrant = "ARA";
+								fourthQuadrant = "IND";
+								centre = "RUS";
+								break;
+							case "ARA":
+								firstQuadrant = "CHN";
+								secondQuadrant="RUS";
+								thirdQuadrant = "NA";
+								fourthQuadrant = "IND";
+								centre = "ARA";
+								break;
+							case "IND":
+								firstQuadrant = "CHN";
+								secondQuadrant="RUS";
+								thirdQuadrant = "NA";
+								fourthQuadrant = "ARA";
+								centre = "IND";
+								break;
+						}
+
+					}
+
+
+
 					// update the text to show at the mouse position
 					function update(mouse){
 						// x and y used for testing different languages
 						var x = (mouse.x / window.innerWidth) * 2 - 1;
 						var y = -(mouse.y / window.innerHeight) * 2 + 1;
 
-						//Color of tool tip for different language
-						var color = "black";
+						
 
-									// origin - English
+									// origin
 			                        if(((x>=-0.3) && (x<=0.3)) && ((y>=-0.3)&&(y<=0.3))){
-			                                setCenterMap("NA","mercator");
+			                                setCenterMap(centre,"mercator");
 			                                message = "Two wrongs don't make a right";
-			                                color = "#0000FF"; //Blue
+			                                
 			                        }
-			                        // 1st quadrant - Chinese
+			                        // 1st quadrant
 			                        else if(((x>0.3) && (x<=0.6)) && ((y>=0) &&(y<=0.3))){
-			                                setCenterMap("CHN","stereographic");
+			                                setCenterMap(firstQuadrant,"stereographic");
 			                                 message = "两个错误不能 make a right";
-			                                 color = '#FF0000'; //Yellow
+			                                 
 			                        }
 
 			                        else if(((x>=0.6) && (x<=1)) && ((y>=0) &&(y<=0.3))){
-			                                setCenterMap("CHN","stereographic");
+			                                setCenterMap(firstQuadrant,"stereographic");
 			                                 message = "来得容易，去得快。";
 			                                 color = '#FF0000'; //Yellow
 			                        }
 
 			                        else if(((x>=0.3) && (x<=1)) && ((y>=0) &&(y<=1))){
-			                                setCenterMap("CHN","homolosine");
+			                                setCenterMap(firstQuadrant,"homolosine");
 			                                 message = "Два заблуждения не 作出正确的";
 			                                 color = '#FF0000'; //Yellow
 			                        }
-			                        // 2nd quadrant - Russian
+			                        // 2nd quadrant
 		                          else if(((x<=0.3) && (x>=-1) && (y<=1) && (y>=0)))
 		                          {
-		                                  setCenterMap("RUS","homolosine");
+		                                  setCenterMap(secondQuadrant,"homolosine");
 		                                   message = "Два заблуждения не делают право";
 		                                   color = '#990066'; //Light Green
 		                          }
 			                        else if(((x<=0.3) && (x>=-1) && (y<1) && (y>=0)))
 			                        {
-			                                setCenterMap("RUS","mercator");
+			                                setCenterMap(secondQuadrant,"mercator");
 			                                 message = "two заблуждения не делают right";
 			                                 color = '#990066'; //Light Green
 			                        }
 
-			                        // 3rd quadrant - Hindi
-			                        else if(((x<=1) && (x>=0)) && ((y>=-1) && (y<=0))){
-			                                setCenterMap("IND","mercator");
-			                                 message = "आसान में आओ, आसान जाओ।";
-			                                 color = '#FF9900'; //Blue
-			                        }
-			                        // 4th quadrant - Arabic
-			                        else if(((x>=-1) && (x<=0)) && ((y>=-1) && (y<=0))){
-			                                setCenterMap("ARA","mercator");
+			                         // 3rd quadrant
+			                        else if(((x>=-1) && (x<=0)) && ((y>=-1) && (y<=0)))
+			                        {
+			                                setCenterMap(thirdQuadrant,"mercator");
 			                                 message = "ﺕﺄﺘﻳ ﻢﻧ ﺎﻠﺴﻬﻟ، ﻢﻧ ﺎﻠﺴﻬﻟ ﺎﻟﺬﻫﺎﺑ.";
 			                                 color = '#006600';
 			                        }
+
+			                        // 4th quadrant
+			                        else if(((x<=1) && (x>=0)) && ((y>=-1) && (y<=0)))
+			                        {
+			                                setCenterMap(fourthQuadrant,"mercator");
+			                                 message = "आसान में आओ, आसान जाओ।";
+			                                 color = '#FF9900'; //Blue
+			                        }
+			                       
 			                        else{
 			                                 message = "test";
 			                        }
