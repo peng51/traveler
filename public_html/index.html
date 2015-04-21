@@ -214,7 +214,6 @@
 									
 
 
-*/
 									     var t = coefficient;
 
 									     
@@ -292,16 +291,18 @@
 							var x = (mouse.x / window.innerWidth) * 2 - 1;
 							var y = -(mouse.y / window.innerHeight) * 2 + 1;
 
-							console.log(firstQuadrantData);
+							/*console.log(firstQuadrantData);
 							console.log(secondQuadrantData);
 							console.log(thirdQuadrantData);
 							console.log(fourthQuadrantData);
-							console.log(centreData);
+							console.log(centreData);*/
 
 										// origin
 				                        if(((x>=-0.3) && (x<=0.3)) && ((y>=-0.3)&&(y<=0.3))){
-				                        		coefficient = 1;				                        		
-				                                d3MorphMap(centreData,centreData,coefficient,"mercator");
+				                        		coefficient = 1;
+				                        		data1 = centreData;
+				                        		data2 = centreData;				                        		
+				                                d3MorphMap(data1,data2,coefficient,"mercator");
 				                                message1 = "Two wrongs don't make a right";
 				                                message2 = "";
 				                                color1 = "#1E90FF"//Blue
@@ -310,7 +311,9 @@
 				                        // 1st quadrant
 				                        else if(((x>0.3) && (x<=0.6)) && ((y>=0) &&(y<=0.3))){
 				                        		coefficient = 0.2;
-				                                d3MorphMap(centreData,firstQuadrantData,coefficient,"stereographic");
+				                        		data1 = centreData;
+				                        		data2 = firstQuadrantData;
+				                                d3MorphMap(data1,data2,coefficient,"stereographic");
 				                                 message1 = "两个错误不能";
 				                                 message2 = "make a right";
 				                         		color1 = "#FF0000"; //Red
@@ -319,7 +322,9 @@
 
 				                        else if(((x>=0.6) && (x<=1)) && ((y>=0) &&(y<=0.3))){
 				                        		coefficient = 1;
-				                                d3MorphMap(centreData,firstQuadrantData,coefficient,"stereographic");
+				                        		data1 = centreData;
+				                        		data2 = firstQuadrantData;
+				                                d3MorphMap(data1,data2,coefficient,"stereographic");
 				                                 message1 = "来得容易，去得快。";
 				                                 message2 = "";
 				                                 color1 = "#FF0000"; //Red
@@ -328,7 +333,9 @@
 
 				                        else if(((x>=0.3) && (x<=1)) && ((y>=0) &&(y<=1))){
 				                        		coefficient = 0.3;
-				                        		d3MorphMap(centreData,firstQuadrantData,coefficient,"homolosine");
+				                        		data1 = centreData;
+				                        		data2 = firstQuadrantData;
+				                        		d3MorphMap(data1,data2,coefficient,"homolosine");
 				                                message1 = "Два заблуждения не";
 				                                message2 = "作出正确的";
 				                                color1 ="#800000";//Maroon
@@ -338,7 +345,9 @@
 			                          else if(((x<=0.3) && (x>=-1) && (y<=1) && (y>=0)))
 			                          {
 			                          			coefficient = 0.2;
-			                                  d3MorphMap(firstQuadrantData,secondQuadrantData,coefficient,"homolosine");
+			                          			data1 = firstQuadrantData;
+				                        		data2 = secondQuadrantData;
+			                                  d3MorphMap(data1,data2,coefficient,"homolosine");
 			                                   message1 = "Два заблуждения не делают право";
 			                                   message2 = "";
 			                                   color1 ="#800000";
@@ -347,7 +356,9 @@
 				                        else if(((x<=0.3) && (x>=-1) && (y<1) && (y>=0)))
 				                        {
 				                        		coefficient = 0.9;
-				                                d3MorphMap(firstQuadrantData,secondQuadrantData,coefficient,"mercator");
+				                        		data1 = firstQuadrantData;
+				                        		data2 = secondQuadrantData;
+				                                d3MorphMap(data1,data2,coefficient,"mercator");
 				                                 message1 = "two заблуждения не делают ";
 				                                 message2 = "right";
 				                                 color1 ="#800000";
@@ -358,7 +369,9 @@
 				                        else if(((x>=-1) && (x<=0)) && ((y>=-1) && (y<=0)))
 				                        {
 				                        	coefficient =1;
-				                                d3MorphMap(firstQuadrantData,thirdQuadrantData,coefficient,"mercator");
+				                        	data1 = firstQuadrantData;
+				                        		data2 = thirdQuadrantData;
+				                                d3MorphMap(data1,data2,coefficient,"mercator");
 				                                 message1 = "ﺕﺄﺘﻳ ﻢﻧ ﺎﻠﺴﻬﻟ، ﻢﻧ ﺎﻠﺴﻬﻟ ﺎﻟﺬﻫﺎﺑ.";
 				                                 message2 = "";
 				                                 //color = '#006600';
@@ -370,7 +383,9 @@
 				                        else if(((x<=1) && (x>=0)) && ((y>=-1) && (y<=0)))
 				                        {
 				                        	coefficient =1;
-				                                d3MorphMap(firstQuadrantData,fourthQuadrantData,coefficient,"mercator");
+				                        	data1 = firstQuadrantData;
+				                        		data2 = fourthQuadrantData;
+				                                d3MorphMap(data1,data2,coefficient,"mercator");
 				                                 message1 = "आसान में आओ, आसान जाओ।";
 				                                 message2 = "";
 
