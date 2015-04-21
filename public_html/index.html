@@ -36,12 +36,18 @@
 						// D3 variables for projecting the maps
 						var projection, path, group;
 						
+						//variables for storing paths for different countries
+						var path_US,path_CHN,path_RUS,path_ARA,path_IND;
+
+						var data_US,data_CHN,data_RUS,data_ARA,data_IND;
+
 						canvas = document.getElementById('myCanvas');
 				      	context = canvas.getContext('2d');
 						
-						initD3();
+						
+						//initD3();
 						setQuadrants(source);
-
+						loadPaths();
 
 						// init D3
 						function initD3(){
@@ -62,13 +68,53 @@
 							});
 						}
 
+						function loadPaths()
+						{							
+							d3.json("maps/NA.geo.json", function(data)
+							{
+								data_US = data;
+								path_US = path(data.features[0].geometry);
+								//console.log(path_US);
+
+							});
+							d3.json("maps/CHN.geo.json", function(data)
+							{
+								data_CHN=data;
+								path_CHN = path(data.features[0].geometry);
+
+							});
+							d3.json("maps/RUS.geo.json", function(data)
+							{
+								data_RUS=data;
+								path_RUS = path(data.features[0].geometry);
+
+							});
+							d3.json("maps/ARA.geo.json", function(data)
+							{
+								data_ARA=data;
+								path_ARA = path(data.features[0].geometry);
+
+							});
+							d3.json("maps/IND.geo.json", function(data)
+							{
+								data_IND=data;
+								path_IND = path(data.features[0].geometry);
+
+							});							
+						}
+
 						// set the center map of D3
-						function setCenterMap(country, project){
+						function setCenterMap(path1,path2,data1,data2,coefficient,project){
 							var width = window.innerWidth; 
 							var height = 400;
 							
-									d3.json("maps/"+country+".geo.json", function(data)
-									{
+							var int = d3.interpolateString(path1, path2);
+									
+									/*if(coefficient<=0.5)
+										data = data1
+									else
+										data = data2
+
 										// create a first guess for the projection
 									      var center = d3.geo.centroid(data)
 									      var scale  = 150;
@@ -89,12 +135,15 @@
 									     projection = eval("d3.geo."+project+"();")
 	        												.center(center).scale(scale).translate(offset);;
 									     path = path.projection(projection);
+*/
+									     var t = coefficient;
 
-
-									     group.selectAll("path").data(data.features).enter().append("path").attr("d",path);
-									     group.selectAll("path").transition().duration(300).attr("d", path);
+									     //group.selectAll("path").data(data.features).enter().append("path").attr("d",path);
+									     //group.selectAll("path").transition().duration(300).attr("d", path);
+									     group.selectAll("path").attr("d",int(t));
+									     //group.selectAll("path").append("path").attr("d",int(t));
 										
-									});
+									
 						}
 
 						// A utility function to draw a rectangle with rounded corners.
@@ -208,7 +257,8 @@
 
 										// origin
 				                        if(((x>=-0.3) && (x<=0.3)) && ((y>=-0.3)&&(y<=0.3))){
-				                                setCenterMap(centre,"mercator");
+				                        		coefficient = 1
+				                                setCenterMap(path_US,path_US,data_US,data_US,coefficient,"mercator");
 				                                message1 = "Two wrongs don't make a right";
 				                                message2 = "";
 				                                color1 = "#1E90FF"//Blue
@@ -216,7 +266,8 @@
 				                        }
 				                        // 1st quadrant
 				                        else if(((x>0.3) && (x<=0.6)) && ((y>=0) &&(y<=0.3))){
-				                                setCenterMap(firstQuadrant,"stereographic");
+				                        		coefficient = 0.2;
+				                                setCenterMap(path_US,path_CHN,data_US,data_CHN,coefficient,"stereographic");
 				                                 message1 = "两个错误不能";
 				                                 message2 = "make a right";
 				                         		color1 = "#FF0000"; //Red
@@ -224,7 +275,8 @@
 				                        }
 
 				                        else if(((x>=0.6) && (x<=1)) && ((y>=0) &&(y<=0.3))){
-				                                setCenterMap(firstQuadrant,"stereographic");
+				                        		coefficient = 1;
+				                                setCenterMap(path_US,path_CHN,data_US,data_CHN,coefficient,"stereographic");
 				                                 message1 = "来得容易，去得快。";
 				                                 message2 = "";
 				                                 color1 = "#FF0000"; //Red
@@ -232,7 +284,8 @@
 				                        }
 
 				                        else if(((x>=0.3) && (x<=1)) && ((y>=0) &&(y<=1))){
-				                                setCenterMap(firstQuadrant,"homolosine");
+				                        		coefficient = 0.3;
+				                                setCenterMap(path_US,path_CHN,data_US,data_CHN,coefficient,"homolosine");
 				                                 message1 = "Два заблуждения не";
 				                                 message2 = "作出正确的";
 				                                color1 ="#800000";//Maroon
@@ -241,7 +294,8 @@
 				                        // 2nd quadrant
 			                          else if(((x<=0.3) && (x>=-1) && (y<=1) && (y>=0)))
 			                          {
-			                                  setCenterMap(secondQuadrant,"homolosine");
+			                          			coefficient = 0.2;
+			                                  setCenterMap(path_US,path_RUS,data_US,data_RUS,coefficient,"homolosine");
 			                                   message1 = "Два заблуждения не делают право";
 			                                   message2 = "";
 			                                   color1 ="#800000";
@@ -249,7 +303,8 @@
 			                          }
 				                        else if(((x<=0.3) && (x>=-1) && (y<1) && (y>=0)))
 				                        {
-				                                setCenterMap(secondQuadrant,"mercator");
+				                        		coefficient = 0.9;
+				                                setCenterMap(path_US,path_RUS,data_US,data_RUS,coefficient,"mercator");
 				                                 message1 = "two заблуждения не делают ";
 				                                 message2 = "right";
 				                                 color1 ="#800000";
@@ -259,7 +314,8 @@
 				                         // 3rd quadrant
 				                        else if(((x>=-1) && (x<=0)) && ((y>=-1) && (y<=0)))
 				                        {
-				                                setCenterMap(thirdQuadrant,"mercator");
+				                        	coefficient =1;
+				                                setCenterMap(path_US,path_ARA,data_US,data_ARA,coefficient,"mercator");
 				                                 message1 = "ﺕﺄﺘﻳ ﻢﻧ ﺎﻠﺴﻬﻟ، ﻢﻧ ﺎﻠﺴﻬﻟ ﺎﻟﺬﻫﺎﺑ.";
 				                                 message2 = "";
 				                                 //color = '#006600';
@@ -270,7 +326,8 @@
 				                        // 4th quadrant
 				                        else if(((x<=1) && (x>=0)) && ((y>=-1) && (y<=0)))
 				                        {
-				                                setCenterMap(fourthQuadrant,"mercator");
+				                        	coefficient =1;
+				                                setCenterMap(path_US,path_IND,data_US,data_IND,coefficient,"mercator");
 				                                 message1 = "आसान में आओ, आसान जाओ।";
 				                                 message2 = "";
 
