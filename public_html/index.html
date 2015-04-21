@@ -29,7 +29,7 @@
 						var canvas, context;
 
 						//Varibles holding the quadrants
-						var firstQuadrant,secondQuadrant,thirdQuadrant,fourthQuadrant, centre;
+						var firstQuadrantData,secondQuadrantData,thirdQuadrantData,fourthQuadrantData, centreData;
 						var source ="NA"; //Source is english by default
 						// when the mouse moves, call the given function
 				      		document.addEventListener( 'mousemove', onDocumentMouseMove, false );
@@ -45,9 +45,11 @@
 				      	context = canvas.getContext('2d');
 						
 						
-						initD3();
-						setQuadrants(source);
+						
+						
 						loadData();
+						setQuadrants(source);
+						initD3();
 
 						// init D3
 						function initD3(){
@@ -72,44 +74,77 @@
 						{							
 							d3.json("maps/NA.geo.json", function(data)
 							{
-								data_US = data;
-								//path_US = path(data.features[0].geometry);
-								//console.log(path_US);
+								data_US = data;							
 
 							});
 							d3.json("maps/CHN.geo.json", function(data)
 							{
 								data_CHN=data;
-								//path_CHN = path(data.features[0].geometry);
-
 							});
 							d3.json("maps/RUS.geo.json", function(data)
 							{
 								data_RUS=data;
-								//path_RUS = path(data.features[0].geometry);
-
 							});
 							d3.json("maps/ARA.geo.json", function(data)
 							{
 								data_ARA=data;
-								//path_ARA = path(data.features[0].geometry);
-
 							});
 							d3.json("maps/IND.geo.json", function(data)
 							{
 								data_IND=data;
-								//path_IND = path(data.features[0].geometry);
-
 							});							
 						}
 
+						function setQuadrants(source)
+						{
+							switch(source)
+							{
+								case "NA":
+									firstQuadrantData = data_CHN;
+									secondQuadrantData=data_RUS;
+									thirdQuadrantData = data_ARA;
+									fourthQuadrantData = data_IND;
+									centreData = data_US;
+									break;
+								case "CHN":
+									firstQuadrantData = data_RUS;
+									secondQuadrantData=data_US;
+									thirdQuadrantData = data_ARA;
+									fourthQuadrantData = data_IND;
+									centreData = data_CHN;
+									break;
+								case "RUS":
+									firstQuadrantData = data_CHN;
+									secondQuadrantData=data_US;
+									thirdQuadrantData = data_ARA;
+									fourthQuadrantData = data_IND;
+									centreData = data_RUS;
+									break;
+								case "ARA":
+									firstQuadrantData = data_CHN;
+									secondQuadrantData=data_RUS;
+									thirdQuadrantData = data_US;
+									fourthQuadrantData = data_IND;
+									centreData = data_ARA;
+									break;
+								case "IND":
+									firstQuadrantData = data_CHN;
+									secondQuadrantData=data_RUS;
+									thirdQuadrantData = data_US;
+									fourthQuadrantData = data_ARA;
+									centreData = data_IND;
+									break;								
+							}
+
+						}
+
 						// set the center map of D3
-						function setCenterMap(path1,path2,data1,data2,coefficient,project){
-							var width = 300; 
+						function d3MorphMap(data1,data2,coefficient,project){
+							
+							var width = window.innerWidth;
 							var height = 400;
 
-							//var width = window.innerWidth;
-							//var height = window.innerHeight;
+							
 
 							var pathSource, pathDest;
 							var dataSource,dataDest, loadDataFrom;
@@ -129,19 +164,7 @@
 										path = d3.geo.path().projection(projection);
 
 
-							/*d3.json("maps/"+path1+".geo.json", function(data)
-							{
-								dataSource = data;
-								pathSource = path(data.features[0].geometry);
-
-							});	
-
-							d3.json("maps/"+path2+".geo.json", function(data)
-							{
-								dataDest = data;
-								pathDest = path(data.features[0].geometry);
-
-							});*/	
+							
 
 
 
@@ -173,61 +196,32 @@
 
 
 
-							//d3.json("maps/"+path1+".geo.json", function(data)
-							//{
+							
 								
 								pathSource = path(data1.features[0].geometry);
 
-							//});	
-
-							//d3.json("maps/"+path2+".geo.json", function(data)
-							//{
+							
 								
 								pathDest = path(data2.features[0].geometry);
 
-							//});	
+						
 
-							console.log(pathSource);
-							console.log(pathDest);
+							//console.log(pathSource);
+							//console.log(pathDest);
 							
 							var int = d3.interpolateString(pathSource, pathDest);
 									
-									/*if(coefficient<=0.5)
-										data = data1
-									else
-										data = data2
-
-										// create a first guess for the projection
-									      var center = d3.geo.centroid(data)
-									      var scale  = 150;
-									      var offset = [width/2, height/2];
-
-											projection = eval("d3.geo."+project+"();").scale(scale).center(center).translate(offset);
-						        			path = d3.geo.path().projection(projection);
-
-					        				// using the path determine the bounds of the current map and use 
-									      	// these to determine better values for the scale and translation
-											      var bounds  = path.bounds(data);
-											      var hscale  = scale*width  / (bounds[1][0] - bounds[0][0]);
-											      var vscale  = scale*height / (bounds[1][1] - bounds[0][1]);
-											      var scale   = (hscale < vscale) ? hscale : vscale;
-											      var offset  = [width - (bounds[0][0] + bounds[1][0])/2,
-											                        height - (bounds[0][1] + bounds[1][1])/2];
-
-									     projection = eval("d3.geo."+project+"();")
-	        												.center(center).scale(scale).translate(offset);;
-									     path = path.projection(projection);
+									
 
 
 */
 									     var t = coefficient;
 
 									     
-									     //group.selectAll("path").data(data.features).enter().append("path").attr("d",path);
-									     //group.selectAll("path").transition().duration(300).attr("d", path);
+									   
 									     group.selectAll("path").attr("d",path);
 									     group.selectAll("path").attr("d",int(t));
-									     //group.selectAll("path").append("path").attr("d",int(t));
+									   
 										
 									
 						}
@@ -288,48 +282,7 @@
 							update(mouse);
 						}
 						
-						function setQuadrants(source)
-						{
-							switch(source)
-							{
-								case "NA":
-									firstQuadrant = "CHN";
-									secondQuadrant="RUS";
-									thirdQuadrant = "ARA";
-									fourthQuadrant = "IND";
-									centre = "NA";
-									break;
-								case "CHN":
-									firstQuadrant = "RUS";
-									secondQuadrant="NA";
-									thirdQuadrant = "ARA";
-									fourthQuadrant = "IND";
-									centre = "CHN";
-									break;
-								case "RUS":
-									firstQuadrant = "CHN";
-									secondQuadrant="NA";
-									thirdQuadrant = "ARA";
-									fourthQuadrant = "IND";
-									centre = "RUS";
-									break;
-								case "ARA":
-									firstQuadrant = "CHN";
-									secondQuadrant="RUS";
-									thirdQuadrant = "NA";
-									fourthQuadrant = "IND";
-									centre = "ARA";
-									break;
-								case "IND":
-									firstQuadrant = "CHN";
-									secondQuadrant="RUS";
-									thirdQuadrant = "NA";
-									fourthQuadrant = "ARA";
-									centre = "IND";
-									break;
-							}
-
-						}
+						
 
 
 
@@ -339,12 +292,16 @@
 							var x = (mouse.x / window.innerWidth) * 2 - 1;
 							var y = -(mouse.y / window.innerHeight) * 2 + 1;
 
-							
+							console.log(firstQuadrantData);
+							console.log(secondQuadrantData);
+							console.log(thirdQuadrantData);
+							console.log(fourthQuadrantData);
+							console.log(centreData);
 
 										// origin
 				                        if(((x>=-0.3) && (x<=0.3)) && ((y>=-0.3)&&(y<=0.3))){
-				                        		coefficient = 1
-				                                setCenterMap(centre,centre,data_US,data_US,coefficient,"mercator");
+				                        		coefficient = 1;				                        		
+				                                d3MorphMap(centreData,centreData,coefficient,"mercator");
 				                                message1 = "Two wrongs don't make a right";
 				                                message2 = "";
 				                                color1 = "#1E90FF"//Blue
@@ -353,7 +310,7 @@
 				                        // 1st quadrant
 				                        else if(((x>0.3) && (x<=0.6)) && ((y>=0) &&(y<=0.3))){
 				                        		coefficient = 0.2;
-				                                setCenterMap(centre,firstQuadrant,data_US,data_CHN,coefficient,"stereographic");
+				                                d3MorphMap(centreData,firstQuadrantData,coefficient,"stereographic");
 				                                 message1 = "两个错误不能";
 				                                 message2 = "make a right";
 				                         		color1 = "#FF0000"; //Red
@@ -362,7 +319,7 @@
 
 				                        else if(((x>=0.6) && (x<=1)) && ((y>=0) &&(y<=0.3))){
 				                        		coefficient = 1;
-				                                setCenterMap(centre,firstQuadrant,data_US,data_CHN,coefficient,"stereographic");
+				                                d3MorphMap(centreData,firstQuadrantData,coefficient,"stereographic");
 				                                 message1 = "来得容易，去得快。";
 				                                 message2 = "";
 				                                 color1 = "#FF0000"; //Red
@@ -371,7 +328,7 @@
 
 				                        else if(((x>=0.3) && (x<=1)) && ((y>=0) &&(y<=1))){
 				                        		coefficient = 0.3;
-				                        		setCenterMap(centre,firstQuadrant,data_US,data_CHN,coefficient,"homolosine");
+				                        		d3MorphMap(centreData,firstQuadrantData,coefficient,"homolosine");
 				                                message1 = "Два заблуждения не";
 				                                message2 = "作出正确的";
 				                                color1 ="#800000";//Maroon
@@ -381,7 +338,7 @@
 			                          else if(((x<=0.3) && (x>=-1) && (y<=1) && (y>=0)))
 			                          {
 			                          			coefficient = 0.2;
-			                                  setCenterMap(firstQuadrant,secondQuadrant,data_CHN,data_RUS,coefficient,"homolosine");
+			                                  d3MorphMap(firstQuadrantData,secondQuadrantData,coefficient,"homolosine");
 			                                   message1 = "Два заблуждения не делают право";
 			                                   message2 = "";
 			                                   color1 ="#800000";
@@ -390,7 +347,7 @@
 				                        else if(((x<=0.3) && (x>=-1) && (y<1) && (y>=0)))
 				                        {
 				                        		coefficient = 0.9;
-				                                setCenterMap(firstQuadrant,secondQuadrant,data_CHN,data_RUS,coefficient,"mercator");
+				                                d3MorphMap(firstQuadrantData,secondQuadrantData,coefficient,"mercator");
 				                                 message1 = "two заблуждения не делают ";
 				                                 message2 = "right";
 				                                 color1 ="#800000";
@@ -401,7 +358,7 @@
 				                        else if(((x>=-1) && (x<=0)) && ((y>=-1) && (y<=0)))
 				                        {
 				                        	coefficient =1;
-				                                setCenterMap(firstQuadrant,thirdQuadrant,data_CHN,data_ARA,coefficient,"mercator");
+				                                d3MorphMap(firstQuadrantData,thirdQuadrantData,coefficient,"mercator");
 				                                 message1 = "ﺕﺄﺘﻳ ﻢﻧ ﺎﻠﺴﻬﻟ، ﻢﻧ ﺎﻠﺴﻬﻟ ﺎﻟﺬﻫﺎﺑ.";
 				                                 message2 = "";
 				                                 //color = '#006600';
@@ -413,7 +370,7 @@
 				                        else if(((x<=1) && (x>=0)) && ((y>=-1) && (y<=0)))
 				                        {
 				                        	coefficient =1;
-				                                setCenterMap(firstQuadrant,fourthQuadrant,data_CHN,data_IND,coefficient,"mercator");
+				                                d3MorphMap(firstQuadrantData,fourthQuadrantData,coefficient,"mercator");
 				                                 message1 = "आसान में आओ, आसान जाओ।";
 				                                 message2 = "";
 
