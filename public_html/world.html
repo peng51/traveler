@@ -37,6 +37,7 @@
 					CAN: { fillKey: "NA"},
     					IND: { fillKey: "IND" },
     					CHN: { fillKey: "CHN" },
+					TWN: { fillKey: "CHN"},
     					RUS: { fillKey: "RUS" },
 					DZA: { fillKey: "ARA"},	
 					BHR: { fillKey: "ARA"}, 
@@ -77,7 +78,7 @@
 				
 			// tranform country name to language area
 			function countryToLang(country){
-				if (country == "China")
+				if (country == "China" || country == "Taiwan")
 					return "CHN";
 				else if (country == "Russia")
 					return "RUS";
