@@ -4,19 +4,83 @@
 		<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 		<meta content="utf-8" http-equiv="encoding">
 	  	<title>World Map</title>
+		<style type="text/css">
+    			html, body {
+    				height: 100%;
+    				margin: 0;
+    			}
+
+    			#wrapper {
+				min-height:100%;
+    			}
+			.overlay {
+    				position: fixed;
+    				width: 74%;
+    				height: 70%;
+    				left: 12%;
+    				top: 0;
+    				z-index: 10;
+  			}
+    		</style>
 	</head>
 
 	<body>
 		<script src="js/d3.v3.min.js"></script>
 		<script src="js/topojson.js"></script>
 		<script src="js/datamaps.world.min.js"></script>
-		<div id="container" style="position:absolute;width:800px;height:650px;"></div>
+		<div id="wrapper" class="overlay"></div>
 		
 		<!--script main function -->
 		<script>
     			var map = new Datamap({
-				element: document.getElementById('container'),
-				 done: function(datamap) {
+				element: document.getElementById('wrapper'),
+				projection: 'mercator',
+				geographyConfig: {
+					//remove the popup and highlight on hover
+					popupOnHover: false,
+					highlightOnHover: false
+				},
+				// setup the 5 fill colors
+				fills: {
+    					defaultFill: "#ABDDA4",
+    					ARA:"#990066",
+					CHN:"#FF0000",
+					IND:"#FFA500",
+					NA:"#1E90FF",
+					RUS:"#800000"
+  				},
+				// setup the colors for 5 languages
+  				data: {
+    					USA: { fillKey: "NA" },
+					CAN: { fillKey: "NA"},
+    					IND: { fillKey: "IND" },
+    					CHN: { fillKey: "CHN" },
+					TWN: { fillKey: "CHN"},
+    					RUS: { fillKey: "RUS" },
+					DZA: { fillKey: "ARA"},	
+					BHR: { fillKey: "ARA"}, 
+					COM: { fillKey: "ARA"}, 
+					DJI: { fillKey: "ARA"}, 
+					EGY: { fillKey: "ARA"}, 
+					IRQ: { fillKey: "ARA"}, 
+					JOR: { fillKey: "ARA"}, 
+					KWT: { fillKey: "ARA"}, 
+					LBN: { fillKey: "ARA"}, 
+					LBY: { fillKey: "ARA"}, 
+					MAR: { fillKey: "ARA"}, 
+					OMN: { fillKey: "ARA"}, 
+					QAT: { fillKey: "ARA"}, 
+					SAU: { fillKey: "ARA"}, 
+					SOM: { fillKey: "ARA"}, 
+					SDN: { fillKey: "ARA"}, 
+					SYR: { fillKey: "ARA"}, 
+					DZA: { fillKey: "ARA"}, 
+					TUN: { fillKey: "ARA"}, 
+					ARE: { fillKey: "ARA"}, 
+					YEM: { fillKey: "ARA"} 
+ 				},
+				// the onclick function
+				done: function(datamap) {
             				datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
                 				//alert(geography.properties.name);
 						var area = countryToLang(geography.properties.name);
@@ -29,10 +93,10 @@
             				});
 				}
 			});
-			
+				
 			// tranform country name to language area
 			function countryToLang(country){
-				if (country == "China")
+				if (country == "China" || country == "Taiwan")
 					return "CHN";
 				else if (country == "Russia")
 					return "RUS";
