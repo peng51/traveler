@@ -16,7 +16,52 @@
 		<script>
     			var map = new Datamap({
 				element: document.getElementById('container'),
-				 done: function(datamap) {
+				projection: 'mercator',
+				geographyConfig: {
+					//remove the popup and highlight on hover
+					popupOnHover: false,
+					highlightOnHover: false
+				},
+				// setup the 5 fill colors
+				fills: {
+    					defaultFill: "#ABDDA4",
+    					ARA:"#990066",
+					CHN: "#FF0000",
+					IND:"#FFA500",
+					NA:"#1E90FF",
+					RUS:"#800000"
+  				},
+				// setup the colors for 5 languages
+  				data: {
+    					USA: { fillKey: "NA" },
+					CAN: { fillKey: "NA"},
+    					IND: { fillKey: "IND" },
+    					CHN: { fillKey: "CHN" },
+    					RUS: { fillKey: "RUS" },
+					DZA: { fillKey: "ARA"},	
+					BHR: { fillKey: "ARA"}, 
+					COM: { fillKey: "ARA"}, 
+					DJI: { fillKey: "ARA"}, 
+					EGY: { fillKey: "ARA"}, 
+					IRQ: { fillKey: "ARA"}, 
+					JOR: { fillKey: "ARA"}, 
+					KWT: { fillKey: "ARA"}, 
+					LBN: { fillKey: "ARA"}, 
+					LBY: { fillKey: "ARA"}, 
+					MAR: { fillKey: "ARA"}, 
+					OMN: { fillKey: "ARA"}, 
+					QAT: { fillKey: "ARA"}, 
+					SAU: { fillKey: "ARA"}, 
+					SOM: { fillKey: "ARA"}, 
+					SDN: { fillKey: "ARA"}, 
+					SYR: { fillKey: "ARA"}, 
+					DZA: { fillKey: "ARA"}, 
+					TUN: { fillKey: "ARA"}, 
+					ARE: { fillKey: "ARA"}, 
+					YEM: { fillKey: "ARA"} 
+ 				},
+				// the onclick function
+				done: function(datamap) {
             				datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
                 				//alert(geography.properties.name);
 						var area = countryToLang(geography.properties.name);
@@ -29,7 +74,7 @@
             				});
 				}
 			});
-			
+				
 			// tranform country name to language area
 			function countryToLang(country){
 				if (country == "China")
