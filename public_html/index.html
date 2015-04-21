@@ -45,9 +45,9 @@
 				      	context = canvas.getContext('2d');
 						
 						
-						//initD3();
+						initD3();
 						setQuadrants(source);
-						loadPaths();
+						loadData();
 
 						// init D3
 						function initD3(){
@@ -68,47 +68,129 @@
 							});
 						}
 
-						function loadPaths()
+						function loadData()
 						{							
 							d3.json("maps/NA.geo.json", function(data)
 							{
 								data_US = data;
-								path_US = path(data.features[0].geometry);
+								//path_US = path(data.features[0].geometry);
 								//console.log(path_US);
 
 							});
 							d3.json("maps/CHN.geo.json", function(data)
 							{
 								data_CHN=data;
-								path_CHN = path(data.features[0].geometry);
+								//path_CHN = path(data.features[0].geometry);
 
 							});
 							d3.json("maps/RUS.geo.json", function(data)
 							{
 								data_RUS=data;
-								path_RUS = path(data.features[0].geometry);
+								//path_RUS = path(data.features[0].geometry);
 
 							});
 							d3.json("maps/ARA.geo.json", function(data)
 							{
 								data_ARA=data;
-								path_ARA = path(data.features[0].geometry);
+								//path_ARA = path(data.features[0].geometry);
 
 							});
 							d3.json("maps/IND.geo.json", function(data)
 							{
 								data_IND=data;
-								path_IND = path(data.features[0].geometry);
+								//path_IND = path(data.features[0].geometry);
 
 							});							
 						}
 
 						// set the center map of D3
 						function setCenterMap(path1,path2,data1,data2,coefficient,project){
-							var width = window.innerWidth; 
+							var width = 300; 
 							var height = 400;
+
+							//var width = window.innerWidth;
+							//var height = window.innerHeight;
+
+							var pathSource, pathDest;
+							var dataSource,dataDest, loadDataFrom;
+
+							if(coefficient<=0.5)
+							{
+								loadDataFrom = data1;
+							}
+							else
+							{
+								loadDataFrom = data2;
+							}
+
+							// add a projection function to move certain map to the center of the html page
+										projection = eval("d3.geo."+project+"();").scale(width / 6).translate([width / 2, height / 2]);
+										// the path function translates GEOJson objects into svg path data
+										path = d3.geo.path().projection(projection);
+
+
+							/*d3.json("maps/"+path1+".geo.json", function(data)
+							{
+								dataSource = data;
+								pathSource = path(data.features[0].geometry);
+
+							});	
+
+							d3.json("maps/"+path2+".geo.json", function(data)
+							{
+								dataDest = data;
+								pathDest = path(data.features[0].geometry);
+
+							});*/	
+
+
+
+									
+										
+
+										//console.log(loadDataFrom);
+
+										// create a first guess for the projection
+									      var center = d3.geo.centroid(loadDataFrom);
+									      var scale  = 150;
+									      var offset = [width/2, height/2];
+
+											projection = eval("d3.geo."+project+"();").scale(scale).center(center).translate(offset);
+						        			path = d3.geo.path().projection(projection);
+
+					        				// using the path determine the bounds of the current map and use 
+									      	// these to determine better values for the scale and translation
+											      var bounds  = path.bounds(loadDataFrom);
+											      var hscale  = scale*width  / (bounds[1][0] - bounds[0][0]);
+											      var vscale  = scale*height / (bounds[1][1] - bounds[0][1]);
+											      var scale   = (hscale < vscale) ? hscale : vscale;
+											      var offset  = [width - (bounds[0][0] + bounds[1][0])/2,
+											                        height - (bounds[0][1] + bounds[1][1])/2];
+
+									     projection = eval("d3.geo."+project+"();")
+	        												.center(center).scale(scale).translate(offset);;
+									     path = path.projection(projection);
+
+
+
+							//d3.json("maps/"+path1+".geo.json", function(data)
+							//{
+								
+								pathSource = path(data1.features[0].geometry);
+
+							//});	
+
+							//d3.json("maps/"+path2+".geo.json", function(data)
+							//{
+								
+								pathDest = path(data2.features[0].geometry);
+
+							//});	
+
+							console.log(pathSource);
+							console.log(pathDest);
 							
-							var int = d3.interpolateString(path1, path2);
+							var int = d3.interpolateString(pathSource, pathDest);
 									
 									/*if(coefficient<=0.5)
 										data = data1
@@ -135,11 +217,15 @@
 									     projection = eval("d3.geo."+project+"();")
 	        												.center(center).scale(scale).translate(offset);;
 									     path = path.projection(projection);
+
+
 */
 									     var t = coefficient;
 
+									     
 									     //group.selectAll("path").data(data.features).enter().append("path").attr("d",path);
 									     //group.selectAll("path").transition().duration(300).attr("d", path);
+									     group.selectAll("path").attr("d",path);
 									     group.selectAll("path").attr("d",int(t));
 									     //group.selectAll("path").append("path").attr("d",int(t));
 										
@@ -258,7 +344,7 @@
 										// origin
 				                        if(((x>=-0.3) && (x<=0.3)) && ((y>=-0.3)&&(y<=0.3))){
 				                        		coefficient = 1
-				                                setCenterMap(path_US,path_US,data_US,data_US,coefficient,"mercator");
+				                                setCenterMap(centre,centre,data_US,data_US,coefficient,"mercator");
 				                                message1 = "Two wrongs don't make a right";
 				                                message2 = "";
 				                                color1 = "#1E90FF"//Blue
@@ -267,7 +353,7 @@
 				                        // 1st quadrant
 				                        else if(((x>0.3) && (x<=0.6)) && ((y>=0) &&(y<=0.3))){
 				                        		coefficient = 0.2;
-				                                setCenterMap(path_US,path_CHN,data_US,data_CHN,coefficient,"stereographic");
+				                                setCenterMap(centre,firstQuadrant,data_US,data_CHN,coefficient,"stereographic");
 				                                 message1 = "两个错误不能";
 				                                 message2 = "make a right";
 				                         		color1 = "#FF0000"; //Red
@@ -276,7 +362,7 @@
 
 				                        else if(((x>=0.6) && (x<=1)) && ((y>=0) &&(y<=0.3))){
 				                        		coefficient = 1;
-				                                setCenterMap(path_US,path_CHN,data_US,data_CHN,coefficient,"stereographic");
+				                                setCenterMap(centre,firstQuadrant,data_US,data_CHN,coefficient,"stereographic");
 				                                 message1 = "来得容易，去得快。";
 				                                 message2 = "";
 				                                 color1 = "#FF0000"; //Red
@@ -285,9 +371,9 @@
 
 				                        else if(((x>=0.3) && (x<=1)) && ((y>=0) &&(y<=1))){
 				                        		coefficient = 0.3;
-				                                setCenterMap(path_US,path_CHN,data_US,data_CHN,coefficient,"homolosine");
-				                                 message1 = "Два заблуждения не";
-				                                 message2 = "作出正确的";
+				                        		setCenterMap(centre,firstQuadrant,data_US,data_CHN,coefficient,"homolosine");
+				                                message1 = "Два заблуждения не";
+				                                message2 = "作出正确的";
 				                                color1 ="#800000";//Maroon
 				                                color2 = "#FF0000"
 				                        }
@@ -295,7 +381,7 @@
 			                          else if(((x<=0.3) && (x>=-1) && (y<=1) && (y>=0)))
 			                          {
 			                          			coefficient = 0.2;
-			                                  setCenterMap(path_US,path_RUS,data_US,data_RUS,coefficient,"homolosine");
+			                                  setCenterMap(firstQuadrant,secondQuadrant,data_CHN,data_RUS,coefficient,"homolosine");
 			                                   message1 = "Два заблуждения не делают право";
 			                                   message2 = "";
 			                                   color1 ="#800000";
@@ -304,7 +390,7 @@
 				                        else if(((x<=0.3) && (x>=-1) && (y<1) && (y>=0)))
 				                        {
 				                        		coefficient = 0.9;
-				                                setCenterMap(path_US,path_RUS,data_US,data_RUS,coefficient,"mercator");
+				                                setCenterMap(firstQuadrant,secondQuadrant,data_CHN,data_RUS,coefficient,"mercator");
 				                                 message1 = "two заблуждения не делают ";
 				                                 message2 = "right";
 				                                 color1 ="#800000";
@@ -315,7 +401,7 @@
 				                        else if(((x>=-1) && (x<=0)) && ((y>=-1) && (y<=0)))
 				                        {
 				                        	coefficient =1;
-				                                setCenterMap(path_US,path_ARA,data_US,data_ARA,coefficient,"mercator");
+				                                setCenterMap(firstQuadrant,thirdQuadrant,data_CHN,data_ARA,coefficient,"mercator");
 				                                 message1 = "ﺕﺄﺘﻳ ﻢﻧ ﺎﻠﺴﻬﻟ، ﻢﻧ ﺎﻠﺴﻬﻟ ﺎﻟﺬﻫﺎﺑ.";
 				                                 message2 = "";
 				                                 //color = '#006600';
@@ -327,7 +413,7 @@
 				                        else if(((x<=1) && (x>=0)) && ((y>=-1) && (y<=0)))
 				                        {
 				                        	coefficient =1;
-				                                setCenterMap(path_US,path_IND,data_US,data_IND,coefficient,"mercator");
+				                                setCenterMap(firstQuadrant,fourthQuadrant,data_CHN,data_IND,coefficient,"mercator");
 				                                 message1 = "आसान में आओ, आसान जाओ।";
 				                                 message2 = "";
 
