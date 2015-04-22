@@ -1,0 +1,495 @@
+				<!DOCTYPE html>
+				<html>
+				<head>
+					<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+					<meta content="utf-8" http-equiv="encoding">
+				  	<title>A Visit With Miles</title>
+					<link rel="stylesheet" type="text/css" href="css/tr.css">
+				</head>
+
+				<body background="image/Background-Gray.jpg">
+					<div id="canvas-container">
+			   		<canvas id="myCanvas" width="500" height="40">
+					</div>
+
+
+
+
+					<!--javascript library -->
+					<script src="js/three.js"></script>
+					<script src="js/Detector.js"></script>
+					<script src="js/d3.v3.min.js"></script>
+				        <script src="js/d3.geo.projection.v0.min.js"></script>
+ 					<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+					<!--script main function -->
+					<script>
+
+						// Canvas for displaying the poem
+						var canvas, context;
+
+						//Varibles holding the quadrants
+						var firstQuadrantData,secondQuadrantData,thirdQuadrantData,fourthQuadrantData, centreData;
+						var source ="NA"; //Source is english by default
+
+						// D3 variables for projecting the maps
+						var projection, path, group;
+
+						//variables for storing paths for different countries
+						var path_US,path_CHN,path_RUS,path_ARA,path_IND;
+
+						var data_US,data_CHN,data_RUS,data_ARA,data_IND;
+
+
+						var flag = 0;
+
+
+
+
+
+
+						canvas = document.getElementById('myCanvas');
+				      	context = canvas.getContext('2d');
+
+
+						// when the mouse moves, call the given function
+				      		document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+
+				      		loadMaps();
+							setQuadrants(source);
+							initD3();
+
+				      		//console.log(data_US.features[0]);
+
+						// init D3
+						function initD3(){
+							var width = window.innerWidth, height = window.innerHeight;
+							var color = d3.scale.category10();
+							// create a svg graphic to show the maps of countries
+							var svg = d3.select("body").append("svg").attr("width",width).attr("height",height);
+							// add a projection function to move certain map to the center of the html page
+							projection = d3.geo.mercator().scale(width / 6).translate([width / 2, height / 2]);
+							// the path function translates GEOJson objects into svg path data
+							path = d3.geo.path().projection(projection);
+							// tranform the GEOJson object into svg path data and display it into html
+							d3.json("maps/NA.geo.json", function(data)
+							{
+								group = svg.append("g").attr("id","group");
+								group.selectAll("path").data(data.features).enter().append("path").attr("d",path);
+
+							});
+						}
+
+						/*function loadData()
+						{
+							data_US =d3.json("maps/NA.geo");
+
+							d3.json("maps/CHN.geo.json", function(data)
+							{
+								data_CHN=data;
+								async
+							});
+							d3.json("maps/RUS.geo.json", function(data)
+							{
+								data_RUS=data;
+							});
+							d3.json("maps/ARA.geo.json", function(data)
+							{
+								data_ARA=data;
+							});
+							d3.json("maps/IND.geo.json", function(data)
+							{
+								data_IND=data;
+							});
+						}*/
+
+						function loadMaps() {
+						    jQuery.ajax({
+						         url:    'maps/NA.geo.json',
+						         success: function(data){
+												data_US = data;
+
+											},
+						         async:   false
+						    });
+
+						    jQuery.ajax({
+						         url:    'maps/CHN.geo.json',
+						         success: function(data){
+												data_CHN = data;
+
+											},
+						         async:   false
+						    });
+						    jQuery.ajax({
+						         url:    'maps/RUS.geo.json',
+						         success: function(data){
+												data_RUS = data;
+
+											},
+						         async:   false
+						    });
+						    jQuery.ajax({
+						         url:    'maps/ARA.geo.json',
+						         success: function(data){
+												data_ARA = data;
+
+											},
+						         async:   false
+						    });
+						    jQuery.ajax({
+						         url:    'maps/IND.geo.json',
+						         success: function(data){
+												data_IND = data;
+
+											},
+						         async:   false
+						    });
+
+						    console.log(data_US);
+						}
+
+
+
+
+						function setQuadrants(source)
+						{
+							switch(source)
+							{
+								case "NA":
+									firstQuadrantData = data_CHN;
+									secondQuadrantData=data_RUS;
+									thirdQuadrantData = data_ARA;
+									fourthQuadrantData = data_IND;
+									centreData = data_US;
+									break;
+								case "CHN":
+									firstQuadrantData = data_RUS;
+									secondQuadrantData=data_US;
+									thirdQuadrantData = data_ARA;
+									fourthQuadrantData = data_IND;
+									centreData = data_CHN;
+									break;
+								case "RUS":
+									firstQuadrantData = data_CHN;
+									secondQuadrantData=data_US;
+									thirdQuadrantData = data_ARA;
+									fourthQuadrantData = data_IND;
+									centreData = data_RUS;
+									break;
+								case "ARA":
+									firstQuadrantData = data_CHN;
+									secondQuadrantData=data_RUS;
+									thirdQuadrantData = data_US;
+									fourthQuadrantData = data_IND;
+									centreData = data_ARA;
+									break;
+								case "IND":
+									firstQuadrantData = data_CHN;
+									secondQuadrantData=data_RUS;
+									thirdQuadrantData = data_US;
+									fourthQuadrantData = data_ARA;
+									centreData = data_IND;
+									break;
+							}
+
+
+						}
+
+						function returnData(country)
+						{
+							var data;
+							switch(country)
+							{
+								case "NA":
+								return data_US;
+								case "CHN":
+								return data_CHN;
+								case "RUS":
+								return data_RUS;
+								case "ARA":
+								return data_ARA;
+								case "IND":
+								return data_IND;
+							}
+
+						}
+
+						// set the center map of D3
+						function d3MorphMap(data1,data2,coefficient,project){
+
+							var width = window.innerWidth;
+							var height = 400;
+
+
+
+							var pathSource, pathDest;
+							var dataSource,dataDest, loadDataFrom;
+
+							if(coefficient<=0.5)
+							{
+								loadDataFrom = data1;
+							}
+							else
+							{
+								loadDataFrom = data2;
+							}
+
+							// add a projection function to move certain map to the center of the html page
+										projection = eval("d3.geo."+project+"();").scale(width / 6).translate([width / 2, height / 2]);
+										// the path function translates GEOJson objects into svg path data
+										path = d3.geo.path().projection(projection);
+
+
+
+
+
+
+
+
+
+										//console.log(loadDataFrom);
+
+										// create a first guess for the projection
+									      var center = d3.geo.centroid(loadDataFrom);
+									      var scale  = 150;
+									      var offset = [width/2, height/2];
+
+											projection = eval("d3.geo."+project+"();").scale(scale).center(center).translate(offset);
+						        			path = d3.geo.path().projection(projection);
+
+					        				// using the path determine the bounds of the current map and use
+									      	// these to determine better values for the scale and translation
+											      var bounds  = path.bounds(loadDataFrom);
+											      var hscale  = scale*width  / (bounds[1][0] - bounds[0][0]);
+											      var vscale  = scale*height / (bounds[1][1] - bounds[0][1]);
+											      var scale   = (hscale < vscale) ? hscale : vscale;
+											      var offset  = [width - (bounds[0][0] + bounds[1][0])/2,
+											                        height - (bounds[0][1] + bounds[1][1])/2];
+
+									     projection = eval("d3.geo."+project+"();")
+	        												.center(center).scale(scale).translate(offset);;
+									     path = path.projection(projection);
+
+
+
+
+
+								pathSource = path(data1.features[0].geometry);
+
+
+
+								pathDest = path(data2.features[0].geometry);
+
+
+
+							//console.log(pathSource);
+							//console.log(pathDest);
+
+							var int = d3.interpolateString(pathSource, pathDest);
+
+
+
+
+									     var t = coefficient;
+
+
+
+									     group.selectAll("path").attr("d",path);
+									     group.selectAll("path").attr("d",int(t));
+
+
+
+						}
+
+						// A utility function to draw a rectangle with rounded corners.
+						function roundedRect(context,x,y,width,height,radius,text1,text2,color1,color2){
+						  context.beginPath();
+						  context.moveTo(x,y+radius);
+						  context.lineTo(x,y+height-radius);
+						  context.quadraticCurveTo(x,y+height,x+radius,y+height);
+						  context.lineTo(x+width-radius,y+height);
+						  context.quadraticCurveTo(x+width,y+height,x+width,y+height-radius);
+						  context.lineTo(x+width,y+radius);
+						  context.quadraticCurveTo(x+width,y,x+width-radius,y);
+						  context.lineTo(x+radius,y);
+						  context.quadraticCurveTo(x,y,x,y+radius);
+						  context.strokeStyle = "rgba(255, 255, 255, 0.5)";
+						  context.stroke();
+						  context.fillStyle = "rgba(255, 255, 255, 0.5)";
+						  context.fill();
+
+							// Create gradient
+							var gradient = context.createLinearGradient(0, 0, canvas.width, 0);
+							gradient.addColorStop("0", color1);
+							gradient.addColorStop("0.5", color1);
+							gradient.addColorStop("1.0", color1);
+
+							// Fill with gradient
+							context.font="30px Georgia"
+							context.fillStyle = gradient;
+							context.fillText(text1, 10, 25);
+
+							var text1Length = context.measureText(text1);
+				            var width = text1Length.width;
+
+
+				            // Create gradient
+							var gradient = context.createLinearGradient(0, 0, canvas.width, 0);
+							gradient.addColorStop("0", color2);
+							gradient.addColorStop("0.5", color2);
+							gradient.addColorStop("1.0", color2);
+
+							// Fill with gradient
+							context.font="30px Georgia"
+							context.fillStyle = gradient;
+							context.fillText(text2, width+10, 25);
+
+						}
+
+						// capture mouse movement and update the ThreeJS scene
+						function onDocumentMouseMove(event)
+						{
+							// update the mouse variable
+							var mouse = {x:0, y:0};
+							mouse.x = event.clientX;
+							mouse.y = event.clientY;
+							//console.log('mouse position captured: x = '  + mouse.x + ', y = ' + mouse.y);
+							update(mouse);
+						}
+
+
+
+
+
+						// update the text to show at the mouse position
+						function update(mouse){
+							// x and y used for testing different languages
+							var x = (mouse.x / window.innerWidth) * 2 - 1;
+							var y = -(mouse.y / window.innerHeight) * 2 + 1;
+							var data1,data2;
+							var color1,color2;
+
+							/*console.log(firstQuadrantData);
+							console.log(secondQuadrantData);
+							console.log(thirdQuadrantData);
+							console.log(fourthQuadrantData);
+							console.log(centreData);*/
+
+										// origin
+				                        if(((x>=-0.3) && (x<=0.3)) && ((y>=-0.3)&&(y<=0.3))){
+				                        		coefficient = 1;
+				                        		data1 = centreData;
+				                        		data2 = centreData;
+				                                d3MorphMap(data1,data2,coefficient,"mercator");
+				                                message1 = "Two wrongs don't make a right";
+				                                message2 = "";
+				                                color1 = "#1E90FF"//Blue
+				                                color2 = "#1E90FF";
+				                        }
+				                        // 1st quadrant
+				                        else if(((x>0.3) && (x<=0.6)) && ((y>=0) &&(y<=0.3))){
+				                        		coefficient = 0.2;
+				                        		data1 = centreData;
+				                        		data2 = firstQuadrantData;
+				                                d3MorphMap(data1,data2,coefficient,"stereographic");
+				                                 message1 = "两个错误不能";
+				                                 message2 = "make a right";
+				                         		color1 = "#FF0000"; //Red
+				                         		color2 = "#1E90FF";
+				                        }
+
+				                        else if(((x>=0.6) && (x<=1)) && ((y>=0) &&(y<=0.3))){
+				                        		coefficient = 1;
+				                        		data1 = centreData;
+				                        		data2 = firstQuadrantData;
+				                                d3MorphMap(data1,data2,coefficient,"stereographic");
+				                                 message1 = "来得容易，去得快。";
+				                                 message2 = "";
+				                                 color1 = "#FF0000"; //Red
+				                                 color2 = "#FF0000";
+				                        }
+
+				                        else if(((x>=0.3) && (x<=1)) && ((y>=0) &&(y<=1))){
+				                        		coefficient = 0.3;
+				                        		data1 = centreData;
+				                        		data2 = firstQuadrantData;
+				                        		d3MorphMap(data1,data2,coefficient,"homolosine");
+				                                message1 = "Два заблуждения не";
+				                                message2 = "作出正确的";
+				                                color1 ="#800000";//Maroon
+				                                color2 = "#FF0000"
+				                        }
+				                        // 2nd quadrant
+			                          else if(((x<=0.3) && (x>=-1) && (y<=1) && (y>=0)))
+			                          {
+			                          			coefficient = 0.2;
+			                          			data1 = firstQuadrantData;
+				                        		data2 = secondQuadrantData;
+			                                  d3MorphMap(data1,data2,coefficient,"homolosine");
+			                                   message1 = "Два заблуждения не делают право";
+			                                   message2 = "";
+			                                   color1 ="#800000";
+			                                   color2 = "#800000";
+			                          }
+				                        else if(((x<=0.3) && (x>=-1) && (y<1) && (y>=0)))
+				                        {
+				                        		coefficient = 0.9;
+				                        		data1 = firstQuadrantData;
+				                        		data2 = secondQuadrantData;
+				                                d3MorphMap(data1,data2,coefficient,"mercator");
+				                                 message1 = "two заблуждения не делают ";
+				                                 message2 = "right";
+				                                 color1 ="#800000";
+				                                 color2 = "1E90FF";
+				                        }
+
+				                         // 3rd quadrant
+				                        else if(((x>=-1) && (x<=0)) && ((y>=-1) && (y<=0)))
+				                        {
+				                        	coefficient =1;
+				                        	data1 = firstQuadrantData;
+				                        		data2 = thirdQuadrantData;
+				                                d3MorphMap(data1,data2,coefficient,"mercator");
+				                                 message1 = "ﺕﺄﺘﻳ ﻢﻧ ﺎﻠﺴﻬﻟ، ﻢﻧ ﺎﻠﺴﻬﻟ ﺎﻟﺬﻫﺎﺑ.";
+				                                 message2 = "";
+				                                 //color = '#006600';
+				                                 color1 = '#990066'; //Light Green
+				                                 color2 = "#990066";
+				                        }
+
+				                        // 4th quadrant
+				                        else if(((x<=1) && (x>=0)) && ((y>=-1) && (y<=0)))
+				                        {
+				                        	coefficient =0;
+				                        	data1 = firstQuadrantData;
+				                        		data2 = fourthQuadrantData;
+				                                d3MorphMap(data1,data2,coefficient,"mercator");
+				                                 message1 = "आसान में आओ, आसान जाओ।";
+				                                 message2 = "";
+
+				                                  color1 = '#FF0000'; //Yellow
+				                                  color2 = "#FF0000";
+				                        }
+
+				                        else{
+				                                 message = "test";
+				                        }
+
+							//Clear the textbox
+							context.clearRect(0,0,640,600);
+				            var metrics1 = context.measureText(message1);
+				            var width1 = metrics1.width;
+
+				            var metrics2 = context.measureText(message2);
+				            var width2 = metrics2.width;
+
+				            var totalWidth = width1+width2;
+
+				            //Draw the textbox
+				            roundedRect(context,x,y,totalWidth + 20,20+10,15,message1,message2,color1,color2);
+
+						}
+					</script>
+				</body>
+				</html>

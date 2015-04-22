@@ -3,7 +3,7 @@
 	pointer-events: all;
 }
 #group path {
-	fill: black;
+	fill: #ABDDA4;
 	stroke: white;
 	stroke-width: 0.8px;
   opacity: 0.8;
@@ -36,15 +36,15 @@
 
 #arabic {
    	position: absolute;
-   	left: 0%; 
+   	left: 0%;
    	top: 40%;
 	width: 10%;
-	height: 10%;	
+	height: 10%;
 }
 
 #chinese {
 	position: absolute;
-   	left: 90%; 
+   	left: 90%;
    	top: 40%;
 	width: 10%;
 	height: 10%;
@@ -52,7 +52,7 @@
 
 #english {
 	position: absolute;
-   	left: 40%; 
+   	left: 40%;
    	top: 40%;
 	width: 10%;
 	height: 10%;
@@ -60,7 +60,7 @@
 
 #russian{
 	position: absolute;
-   	left: 40%; 
+   	left: 40%;
    	top: 0%;
 	width: 10%;
 	height: 10%;
@@ -68,7 +68,7 @@
 
 #hindi{
 	position: absolute;
-   	left: 40%; 
+   	left: 40%;
    	top: 90%;
 	width: 10%;
 	height: 10%;

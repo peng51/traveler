@@ -1,0 +1,443 @@
+				<!DOCTYPE html>
+				<html>
+				<head>
+					<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+					<meta content="utf-8" http-equiv="encoding">
+				  	<title>A Visit With Miles</title>
+					<link rel="stylesheet" type="text/css" href="css/tr.css">
+				</head>
+
+				<body background="image/Background-Gray.jpg">
+					<div id="canvas-container">
+					<p id="poem"></p>
+			   		<canvas id="myCanvas" width="500" height="40">
+					</div>
+
+					<!--javascript library -->
+					<script src="js/three.js"></script>
+					<script src="js/Detector.js"></script>
+					<script src="js/d3.v3.min.js"></script>
+					<script src="js/d3.geo.projection.v0.min.js"></script>
+				  <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+				  <script src='data/test.json'></script>
+					<!--script main function -->
+					<script>
+
+						// Canvas for displaying the poem
+						var canvas, context;
+
+						//console.log(data/test[0][0]['L1']);
+						//Varibles holding the quadrants
+						var firstQuadrant,secondQuadrant,thirdQuadrant,fourthQuadrant, centre;
+						var source ="NA"; //Source is english by default
+						// when the mouse moves, call the given function
+				      		document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+						// D3 variables for projecting the maps
+						var projection, path, group;
+
+
+			var link_name = "data/test.json";
+var L1= "Undefined";
+var L2= "Undefined";
+var L3= "Undefined";
+var L4= "Undefined";
+var L5= "Undefined";
+var L12=  "Undefined";
+var L13=  "Undefined";
+var L14=  "Undefined";
+var L15=  "Undefined";
+var L23=  "Undefined";
+var L34=  "Undefined";
+var L45=  "Undefined";
+var L25=  "Undefined";
+var L123= "Undefined";
+var L134= "Undefined";
+var L145= "Undefined";
+var L125= "Undefined";
+
+window.setInterval(getnewpoem, 5000);
+
+test();
+
+var poems;
+
+function test(node,targetNode,type,to) {
+    jQuery.ajax({
+         url:    'data/test.json',
+         success: function(data){
+						poems = data;
+						L1 = (data[0][0]['L1']);
+						L2 = (data[0][0]['L2']);
+						L3 = (data[0][0]['L3']);
+						L4 = (data[0][0]['L4']);
+						L5 = (data[0][0]['L5']);
+						L12 = (data[0][0]['L12']);
+						L13 = (data[0][0]['L13']);
+						L14 = (data[0][0]['L14']);
+						L15 = (data[0][0]['L15']);
+						L23 = (data[0][0]['L23']);
+						L34 = (data[0][0]['L34']);
+						L45 = (data[0][0]['L45']);
+						L25 = (data[0][0]['L25']);
+						L123 = (data[0][0]['L123']);
+						L134 = (data[0][0]['L134']);
+						L145 = (data[0][0]['L145']);
+						L125 = (data[0][0]['L125']);
+						//document.getElementById('ttexti').innerHTML = ttext;
+						//console.log(L1);
+					},
+         async:   false
+    });
+}
+
+console.log(poems[0][0]['L12']);
+					$.getJSON(link_name,
+					function(data){
+						window.data = data;
+						L1 = (data[0][0]['L1']);
+						L2 = (data[0][0]['L2']);
+						L3 = (data[0][0]['L3']);
+						L4 = (data[0][0]['L4']);
+						L5 = (data[0][0]['L5']);
+						L12 = (data[0][0]['L12']);
+						L13 = (data[0][0]['L13']);
+						L14 = (data[0][0]['L14']);
+						L15 = (data[0][0]['L15']);
+						L23 = (data[0][0]['L23']);
+						L34 = (data[0][0]['L34']);
+						L45 = (data[0][0]['L45']);
+						L25 = (data[0][0]['L25']);
+						L123 = (data[0][0]['L123']);
+						L134 = (data[0][0]['L134']);
+						L145 = (data[0][0]['L145']);
+						L125 = (data[0][0]['L125']);
+						//document.getElementById('ttexti').innerHTML = ttext;
+						//console.log(L1);
+					}
+				);
+
+				//console.log(data[0][0]['L125']);
+
+						canvas = document.getElementById('myCanvas');
+				     context = canvas.getContext('2d');
+
+						initD3();
+						setQuadrants(source);
+
+						function getnewpoem() {
+						$.getJSON(link_name,
+					function(data){
+						L1 = (data[1][0]['L1']);
+						L2 = (data[1][0]['L2']);
+						L3 = (data[1][0]['L3']);
+						L4 = (data[1][0]['L4']);
+						L5 = (data[1][0]['L5']);
+						L12 = (data[1][0]['L12']);
+						L13 = (data[1][0]['L13']);
+						L14 = (data[1][0]['L14']);
+						L15 = (data[1][0]['L15']);
+						L23 = (data[1][0]['L23']);
+						L34 = (data[1][0]['L34']);
+						L45 = (data[1][0]['L45']);
+						L25 = (data[1][0]['L25']);
+						L123 = (data[1][0]['L123']);
+						L134 = (data[1][0]['L134']);
+						L145 = (data[1][0]['L145']);
+						L125 = (data[1][0]['L125']);
+						//document.getElementById('ttexti').innerHTML = ttext;
+						console.log(L1);
+					}
+				);
+						}
+
+						// init D3
+						function initD3(){
+							var width = window.innerWidth, height = window.innerHeight;
+							var color = d3.scale.category10();
+							// create a svg graphic to show the maps of countries
+							var svg = d3.select("body").append("svg").attr("width",width).attr("height",height);
+							// add a projection function to move certain map to the center of the html page
+							projection = d3.geo.mercator().scale(width / 6).translate([width / 2, height / 2]);
+							// the path function translates GEOJson objects into svg path data
+							path = d3.geo.path().projection(projection);
+							// tranform the GEOJson object into svg path data and display it into html
+							d3.json("maps/NA.geo.json", function(data)
+							{
+								group = svg.append("g").attr("id","group");
+								group.selectAll("path").data(data.features).enter().append("path").attr("d",path);
+
+							});
+						}
+
+						// set the center map of D3
+						function setCenterMap(country, project){
+							var width = window.innerWidth;
+							var height = 400;
+
+									d3.json("maps/"+country+".geo.json", function(data)
+									{
+										// create a first guess for the projection
+									      var center = d3.geo.centroid(data)
+									      var scale  = 500;
+									      var offset = [width/2, height/2];
+
+											projection = eval("d3.geo."+project+"();").scale(scale).center(center).translate(offset);
+						        			path = d3.geo.path().projection(projection);
+
+					        				// using the path determine the bounds of the current map and use
+									      	// these to determine better values for the scale and translation
+											      var bounds  = path.bounds(data);
+											      var hscale  = scale*width  / (bounds[1][0] - bounds[0][0]);
+											      var vscale  = scale*height / (bounds[1][1] - bounds[0][1]);
+											      var scale   = (hscale < vscale) ? hscale : vscale;
+											      var offset  = [width - (bounds[0][0] + bounds[1][0])/2,
+											                        height - (bounds[0][1] + bounds[1][1])/2];
+
+									     projection = eval("d3.geo."+project+"();")
+	        												.center(center).scale(scale).translate(offset);;
+									     path = path.projection(projection);
+
+
+									     group.selectAll("path").data(data.features).enter().append("path").attr("d",path);
+									     group.selectAll("path").transition().duration(300).attr("d", path);
+
+									});
+						}
+
+						// A utility function to draw a rectangle with rounded corners.
+						function roundedRect(context,x,y,width,height,radius,text,color){
+						  context.beginPath();
+						  context.moveTo(x,y+radius);
+						  context.lineTo(x,y+height-radius);
+						  context.quadraticCurveTo(x,y+height,x+radius,y+height);
+						  context.lineTo(x+width-radius,y+height);
+						  context.quadraticCurveTo(x+width,y+height,x+width,y+height-radius);
+						  context.lineTo(x+width,y+radius);
+						  context.quadraticCurveTo(x+width,y,x+width-radius,y);
+						  context.lineTo(x+radius,y);
+						  context.quadraticCurveTo(x,y,x,y+radius);
+						  context.strokeStyle = "rgba(255, 255, 255, 0.5)";
+						  context.stroke();
+						  context.fillStyle = "rgba(255, 255, 255, 0.5)";
+						  context.fill();
+
+							// Create gradient
+							var gradient = context.createLinearGradient(0, 0, canvas.width, 0);
+							gradient.addColorStop("0", color);
+							gradient.addColorStop("0.5", color);
+							gradient.addColorStop("1.0", color);
+
+							// Fill with gradient
+							context.font="30px Georgia"
+							context.fillStyle = gradient;
+							context.fillText(text, 10, 25);
+						}
+
+						// capture mouse movement and update the ThreeJS scene
+						function onDocumentMouseMove(event)
+						{
+							// update the mouse variable
+							var mouse = {x:0, y:0};
+							mouse.x = event.clientX;
+							mouse.y = event.clientY;
+							//console.log('mouse position captu"#ff0000": x = '  + mouse.x + ', y = ' + mouse.y);
+							update(mouse);
+						}
+
+						function setQuadrants(source)
+						{
+							switch(source)
+							{
+								case "NA":
+									firstQuadrant = "CHN";
+									secondQuadrant="RUS";
+									thirdQuadrant = "ARA";
+									fourthQuadrant = "IND";
+									centre = "NA";
+									break;
+								case "CHN":
+									firstQuadrant = "RUS";
+									secondQuadrant="NA";
+									thirdQuadrant = "ARA";
+									fourthQuadrant = "IND";
+									centre = "CHN";
+									break;
+								case "RUS":
+									firstQuadrant = "CHN";
+									secondQuadrant="NA";
+									thirdQuadrant = "ARA";
+									fourthQuadrant = "IND";
+									centre = "RUS";
+									break;
+								case "ARA":
+									firstQuadrant = "CHN";
+									secondQuadrant="RUS";
+									thirdQuadrant = "NA";
+									fourthQuadrant = "IND";
+									centre = "ARA";
+									break;
+								case "IND":
+									firstQuadrant = "CHN";
+									secondQuadrant="RUS";
+									thirdQuadrant = "NA";
+									fourthQuadrant = "ARA";
+									centre = "IND";
+									break;
+							}
+
+						}
+
+
+
+						// update the text to show at the mouse position
+						function update(mouse){
+							// x and y used for testing different languages
+							var x = (mouse.x / window.innerWidth) * 2 - 1;
+							var y = -(mouse.y / window.innerHeight) * 2 + 1;
+							var cur_proj = "mercator";
+
+
+
+							if(x>-0.3 && x<0.3 && y>-0.3 && y<0.3) {
+								setCenterMap("NA",cur_proj);
+								color = "#ff0000";
+								message = L1;
+
+							} else if(x>0.6 && y>-0.6 && y <0.6){
+								setCenterMap("CHN",cur_proj);
+								color = "#ff0000";
+								message = L2;
+							} else if(x<0.6 && x>-0.6 && y >0.6){
+								setCenterMap("RUS",cur_proj);
+								color = "#ff0000";
+								message = L3;
+							} else if(x<-0.6 && y>-0.6 && y <0.6){
+								setCenterMap("ARA",cur_proj);
+								color = "#ff0000";
+								message = L4;
+							} else if(x>-0.6 && x<0.6 && y < -0.6) {
+								setCenterMap("IND",cur_proj);
+								color = "#ff0000";
+								message = L5;
+							} else if(x>-0.3 && x<0.3 && y>0.3 && y<0.6){
+								setCenterMap("RUS",cur_proj);
+								color = "#ff0000";
+								message = L13;
+							} else if(x>0.3 && x<0.6 && y>-0.6 && y<-0.3){
+								setCenterMap("CHN",cur_proj);
+								color = "#ff0000";
+								message = L12;
+							} else if(x>-0.3 && x<0.3 && y<-0.3 && y>-0.6){
+								setCenterMap("ARA",cur_proj);
+								color = "#ff0000";
+								message = L15;
+							} else if(x<-0.3 && x >-0.6 && y>-0.3 && y<0.3) {
+								setCenterMap("IND",cur_proj);
+								color = "#ff0000";
+								message = L14;
+							} else if(x >0.6 && y>0.6) {
+								setCenterMap(centre,cur_proj);
+								color = "#ff0000";
+								message = L23;
+							} else if(x >0.6 && y<-0.6) {
+								setCenterMap(centre,cur_proj);
+								color = "#ff0000";
+								message = L25;
+							} else if(x< -0.6 && y>0.6) {
+								setCenterMap(centre,cur_proj);
+								color = "#ff0000";
+								message = L34;
+							} else if(x<-0.6 &&  y< 0.6) {
+								setCenterMap(centre,cur_proj);
+								color = "#ff0000";
+								message = L45;
+							} else if(x<0.6 && x > 0.3&& y<0.6 && y>0.3) {
+								setCenterMap(centre,cur_proj);
+								color = "#ff0000";
+								message = L123;
+							} else if(x< 0.6&& x >0.3 && y<-0.3 && y>-0.6) {
+							 setCenterMap(centre,cur_proj);
+								color = "#ff0000";
+								message = L125;
+							} else if(x<-0.3 && x >-0.6 && y<0.6 && y>0.3) {
+								setCenterMap(centre,cur_proj);
+								color = "#ff0000";
+								message = L134;
+							} else if(x<-0.3 && x > -0.6 && y<-0.3 && y>-0.6) {
+								setCenterMap(centre,cur_proj);
+								color = "#ff0000";
+								message = L145;
+							}
+
+/*										// origin
+				                        if(((x>=-0.3) && (x<=0.3)) && ((y>=-0.3)&&(y<=0.3))){
+				                                setCenterMap(centre,"mercator");
+				                                message = "Two wrongs don't make a right";
+				                                color = "#1E90FF"//Blue
+				                        }
+				                        // 1st quadrant
+				                        else if(((x>0.3) && (x<=0.6)) && ((y>=0) &&(y<=0.3))){
+				                                setCenterMap(firstQuadrant,"stereographic");
+				                                 message = "两个错误不能 make a right";
+				                         		color = "#FF0000"; //"#fF0000"
+				                        }
+
+				                        else if(((x>=0.6) && (x<=1)) && ((y>=0) &&(y<=0.3))){
+				                                setCenterMap(firstQuadrant,"stereographic");
+				                                 message = "来得容易，去得快。";
+				                                 color = "#FF0000"; //"#fF0000"
+				                        }
+
+				                        else if(((x>=0.3) && (x<=1)) && ((y>=0) &&(y<=1))){
+				                                setCenterMap(firstQuadrant,"homolosine");
+				                                 message = "Два заблуждения не 作出正确的";
+				                                color ="#800000";//Maroon
+				                        }
+				                        // 2nd quadrant
+			                          else if(((x<=0.3) && (x>=-1) && (y<=1) && (y>=0)))
+			                          {
+			                                  setCenterMap(secondQuadrant,"homolosine");
+			                                   message = "Два заблуждения не делают право";
+			                                   color ="#800000";
+			                          }
+				                        else if(((x<=0.3) && (x>=-1) && (y<1) && (y>=0)))
+				                        {
+				                                setCenterMap(secondQuadrant,"mercator");
+				                                 message = "two заблуждения не делают right";
+				                                 color ="#800000";
+				                        }
+
+				                         // 3rd quadrant
+				                        else if(((x>=-1) && (x<=0)) && ((y>=-1) && (y<=0)))
+				                        {
+				                                setCenterMap(thirdQuadrant,"mercator");
+				                                 message = "ﺕﺄﺘﻳ ﻢﻧ ﺎﻠﺴﻬﻟ، ﻢﻧ ﺎﻠﺴﻬﻟ ﺎﻟﺬﻫﺎﺑ.";
+				                                 //color = '#006600';
+				                                 color = '#990066'; //Light Green
+				                        }
+
+				                        // 4th quadrant
+				                        else if(((x<=1) && (x>=0)) && ((y>=-1) && (y<=0)))
+				                        {
+				                                setCenterMap(fourthQuadrant,"mercator");
+				                                 message = "आसान में आओ, आसान जाओ।";
+
+
+				                                  color = '#FF0000'; //Yellow
+				                        }
+
+				                        else{
+				                                 message = "test";
+				                        }
+*/
+							//Clear the textbox
+							context.clearRect(0,0,640,600);
+				            var metrics = context.measureText(message);
+				            var width = metrics.width;
+				            //Draw the textbox
+				            roundedRect(context,x,y,width + 20,20+10,15,message,color);
+
+						}
+					</script>
+				</body>
+				</html>
