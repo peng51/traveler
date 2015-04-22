@@ -274,7 +274,7 @@ group.selectAll("path").attr("d",int(t));
 }
 
 // A utility function to draw a rectangle with rounded corners.
-function roundedRect(context,x,y,width,height,radius,text1){
+function display_poem(context,x,y,width,height,radius,text1){
   context.beginPath();
   context.moveTo(x,y+radius);
   context.lineTo(x,y+height-radius);
@@ -388,6 +388,6 @@ function update(mouse){
   var width1 = metrics1.width;
 
   //Draw the textbox
-  roundedRect(context,x,y,width1 + 20,20+10,15,Phrase);
+  display_poem(context,x,y,width1 + 20,20+10,15,Phrase);
 
 }
