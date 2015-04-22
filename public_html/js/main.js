@@ -315,13 +315,121 @@ update(mouse);
 }
 
 
-function pick_maps(x,y) {
+function pick_maps(x,y)
+{
+    //First Quadrant
+    if(x>=0 && x <=0.5 && y>=0 && y<=0.5)
+    {
+      data1 = data_RUS;
+      data2 = data_US;
+    }
+    /*else if(x>0.5 && x<=1 && y>=0 && y<=0.5)
+    {
+      data1 = data_US;
+      data2 = data_CHN;
+    }
+    else if(x>0.5 && x<=1 && y>0.5 && y<=1)
+    {
+      data1 = data_RUS;
+      data2 = data_CHN;
+    }
+    else if(x>=0 && x<=0.5 && y>0.5 && y<=1)
+    {
+      data1 = data_US;
+      data2 = data_RUS;
+    }*/
+    else if((y/x)<=1)
+    {
+      data1 = data_RUS;
+      data2 = data_CHN;
+    }
+    else if((y/x)>1)
+    {
+      data1 = data_US;
+      data2 = data_RUS;
+    }
 
+    /*//Second Quadrant
+    if(x<0 && x >=-0.5 && y>=0 && y<=0.5)
+    {
+      data1 = data_RUS;
+      data2 = data_US;
+    }
+    
+    else if((y/x)>=-1)
+    {
+      data1 = data_US;
+      data2 = data_ARA;
+    }
+    else if((y/x)<-1)
+    {
+      data1 = data_US;
+      data2 = data_RUS;
+    }    
+
+    //Third Quadrant
+    if(x<0 && x >=-0.5 && y<=0 && y>=0.5)
+    {
+      data1 = data_RUS;
+      data2 = data_US;
+    }
+    
+    else if((y/x)<=1)
+    {
+      data1 = data_US;
+      data2 = data_ARA;
+    }
+    else if((y/x)>1)
+    {
+      data1 = data_US;
+      data2 = data_IND;
+    }
+
+    //Fourth Quadrant
+    if(x>=0 && x <=0.5 && y<=0 && y>=0.5)
+    {
+      data1 = data_RUS;
+      data2 = data_US;
+    }
+    
+    else if((y/x)<=-1)
+    {
+      data1 = data_US;
+      data2 = data_CHN;
+    }
+    else if((y/x)>-1)
+    {
+      data1 = data_US;
+      data2 = data_IND;
+    }*/
 }
 
 
 function find_morph_coefficient(x,y){
-  return 0.5;
+  var bigCoordinate,morphingCoefficient;
+  var absX,absY;
+
+  absX = Math.abs(x);
+  absY = Math.abs(y);
+  if(absX>absY)
+  bigCoordinate = absX;
+  else
+  bigCoordinate = absY;
+  
+  if(bigCoordinate>0.5)
+    morphingCoefficient = bigCoordinate;
+  else
+    morphingCoefficient = 1-bigCoordinate;
+
+  if(absX>=0.7 && absY>=0.7)
+  {
+  if(absX>=absY)
+    morphingCoefficient = (1-absX)+0.5;
+  else
+    morphingCoefficient = (1-absY)+0.5;
+  }
+
+  return morphingCoefficient;
 }
 
 
@@ -372,8 +480,8 @@ function update(mouse){
   var y = -(mouse.y / window.innerHeight) * 2 + 1;
   var coefficient;
   var Phrase;
-  data1 = data_US;
-  data2 = data_RUS;
+  //data1 = data_US;
+  //data2 = data_RUS;
 
   //Do the Map Stuff Here
   pick_maps(x,y);
