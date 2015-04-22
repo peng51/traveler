@@ -15,12 +15,36 @@
     			}
 			.overlay {	
 				position: fixed;
-    				width: 72%;
-    				height: 68%;
-    				left: 12%;
-    				top: 5%;
+    				width: 68%;
+    				height: 55%;
+    				left: 15%;
+    				top: 6%;
     				z-index: 10;
   			}
+			#tit{
+				position: fixed;
+				left: 38%;
+				top: 3%;
+				text-align: left;
+				font-size: 27px;
+				font-weight: bold;
+				font-family: "Frutiger";
+			}
+			#tit2{
+				position: fixed;
+                                left: 41%;
+                                top: 6.5%;
+                                text-align: left;
+                                font-size: 23px;
+                                font-family: "Frutiger";
+				font-style: oblique;
+			}
+			#version{
+				position: fixed;
+				left: 90%;
+				top: 90%;
+				font-family: "Arial";
+			}
 			h2 {
 				font-family: "Times New Roman", Georgia, sans-serif;
 				font-style: oblique;
@@ -31,12 +55,20 @@
 	</head>
 
 	<body>
-		<h2>Non-Arrival Flights: a digital remapping of linguistic borders</h2>
+		<div id = 'tit'>Non-Arrival Flights: <br />
+			<div id = 'tit2'>
+				a digital remapping of linguistic borders
+			</div>
+		</div>
 
 		<script src="js/d3.v3.min.js"></script>
 		<script src="js/topojson.js"></script>
 		<script src="js/datamaps.world.min.js"></script>
-		<div id="wrapper" class="overlay"></div>		
+		<div id="wrapper" class="overlay"></div>
+
+		<div id = 'version'>
+			version 1.0.0
+		</div>		
 		<!--script main function -->
 		<script>
     			var map = new Datamap({
@@ -97,7 +129,7 @@
 							w.center = area;
 						}
 						else{
-							window.alert("not supported");
+							window.alert("Flight overbooked. Pick another destination");
 						}
 						//window.location.href = 'index.html';
             				});
