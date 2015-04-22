@@ -38,7 +38,7 @@
 				geographyConfig: {
 					//remove the popup and highlight on hover
 					popupOnHover: false,
-					highlightOnHover: false
+    					highlightOnHover: true
 				},
 				// setup the 5 fill colors
 				fills: {
@@ -51,7 +51,7 @@
   				},
 				// setup the colors for 5 languages
   				data: {
-    					USA: { fillKey: "NA" },
+    					USA: { fillKey: "NA"},
 					CAN: { fillKey: "NA"},
     					IND: { fillKey: "IND" },
     					CHN: { fillKey: "CHN" },
@@ -88,6 +88,9 @@
 							console.log(area);	
 							var w = window.open("index.html");
 							w.center = area;
+						}
+						else{
+							window.alert("not supported");
 						}
 						//window.location.href = 'index.html';
             				});
