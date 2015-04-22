@@ -12,6 +12,18 @@ var projection, path, group;
 //variables for storing paths for different countries
 var data_US,data_CHN,data_RUS,data_ARA,data_IND;
 
+//Variables for country color code
+var color_L1, color_L2, color_L3, color_L4, color_L5;
+
+//Variables for storing color information related to languages
+var message1 = 'Veryfiy pick_phrases';
+var message2 = 'Veryfiy pick_phrases';
+var message3 = 'Veryfiy pick_phrases';
+
+var color1;
+var color2;
+var color3;
+
 //Variable to help morph between source and Destination country
 var currentSource,currentDest;
 
@@ -72,6 +84,7 @@ window.setInterval(getnewpoem, 5000);
 
 //Here is where all the heavy lifting happens
 loadMaps();
+initcolors();
 loadPoems();
 setQuadrants(srcLang);
 getnewpoem();
@@ -96,6 +109,16 @@ d3.json("maps/NA.geo.json", function(data)
 
 });
 }
+
+
+function initcolors() {
+  color_L1 ="blue";
+  color_L2 = "red";
+  color_L3 = "maroon";
+  color_L4 = "green";
+  color_L5 = "orange";
+}
+
 
 function loadMaps() {
   jQuery.ajax({
@@ -304,7 +327,7 @@ group.selectAll("path").attr("d",int(t));
 }
 
 // A utility function to draw a rectangle with rounded corners.
-function display_poem(context,x,y,width,height,radius,text1){
+function display_poem(context,x,y,width,height,radius,m1,m2,m3,c1,c2,c3){
   context.beginPath();
   context.moveTo(x,y+radius);
   context.lineTo(x,y+height-radius);
@@ -320,16 +343,28 @@ function display_poem(context,x,y,width,height,radius,text1){
   context.fillStyle = "rgba(255, 255, 255, 0.0)";
   context.fill();
 
-// Create gradient
+/*// Create gradient
 var gradient = context.createLinearGradient(0, 0, canvas.width, 0);
 gradient.addColorStop("0", 'red');
 gradient.addColorStop("0.5", 'red');
-gradient.addColorStop("1.0", 'red');
+gradient.addColorStop("1.0", 'red');*/
 
 // Fill with gradient
 context.font="30px Georgia"
-context.fillStyle = gradient;
-context.fillText(text1, 10, 25);
+context.fillStyle = c1;
+context.fillText(m1, 10, 25);
+
+ var metrics1 = context.measureText(m1);
+ var width1 = metrics1.width;
+
+context.fillStyle = c2;
+context.fillText(m2, width1+20, 25);
+
+metrics1 = context.measureText(m1+m2);
+width1 = metrics1.width;
+
+context.fillStyle = c3;
+context.fillText(m3, width1+20, 25);
 
 }
 
@@ -355,9 +390,9 @@ function getData2(x,y)
         data2 = centreData;
         currentDest = centre;
       }
-      
+
       else if((y/x)<=1)
-      {        
+      {
         data2 = firstQuadrantData;
         currentDest = firstQuadrant;
       }
@@ -376,7 +411,7 @@ function getData2(x,y)
         data2 = centreData;
         currentDest = centre;
       }
-      
+
       else if((y/x)>=-1)
       {
         data2 = thirdQuadrantData;
@@ -386,9 +421,9 @@ function getData2(x,y)
       {
         data2 = secondQuadrantData;
         currentDest = secondQuadrant;
-      }    
+      }
     }
-    
+
 
     //Third Quadrant
     else if(x<=0 && x>=-1 && y<=0 && y>=-1)
@@ -397,7 +432,7 @@ function getData2(x,y)
       {
         data2 = centreData;
         currentDest = Centre;
-      }      
+      }
       else if((y/x)<=1)
       {
        data2 = thirdQuadrantData;
@@ -418,7 +453,7 @@ function getData2(x,y)
         data2 = centreData;
         currentDest = centre;
       }
-      
+
       else if((y/x)<=-1)
       {
         data2 = fourthQuadrantData;
@@ -457,7 +492,7 @@ function getData1(currentDest)
 function pick_maps(x,y)
 {
     getData2(x,y);
-    //Get Data1 based on Data2   
+    //Get Data1 based on Data2
     getData1(currentDest);
 }
 
@@ -472,7 +507,7 @@ function find_morph_coefficient(x,y){
   bigCoordinate = absX;
   else
   bigCoordinate = absY;
-  
+
   if(bigCoordinate>0.5)
     morphingCoefficient = bigCoordinate;
   else
@@ -491,43 +526,128 @@ function find_morph_coefficient(x,y){
 
 
 function pick_phrases(x,y){
-  var message = 'Veryfiy pick_phrases';
+
+
     if(x>-0.3 && x<0.3 && y>-0.3 && y<0.3) {
-      message = L1;
+      message1 = L1[0];
+      message2 = L1[1];
+      message3 = L1[2];
+      color1 = color_L1;
+      color2 = color_L1;
+      color3 = color_L1;
     } else if(x>0.6 && y>-0.6 && y <0.6){
-      message = L2;
+      message1 = L2[0];
+      message2 = L2[1];
+      message3 = L2[2];
+      color1 = color_L2;
+      color2 = color_L2;
+      color3 = color_L2;
     } else if(x<0.6 && x>-0.6 && y >0.6){
-      message = L3;
+      message1 = L3[0];
+      message2 = L3[1];
+      message3 = L3[2];
+      color1 = color_L3;
+      color2 = color_L3;
+      color3 = color_L3;
     } else if(x<-0.6 && y>-0.6 && y <0.6){
-      message = L4;
+      message1 = L4[0];
+      message2 = L4[1];
+      message3 = L4[2];
+      color1 = color_L4;
+      color2 = color_L4;
+      color3 = color_L4;
     } else if(x>-0.6 && x<0.6 && y < -0.6) {
-      message = L5;
+      message1 = L5[0];
+      message2 = L5[1];
+      message3 = L5[2];
+      color1 = color_L5;
+      color2 = color_L5;
+      color3 = color_L5;
     } else if(x>-0.3 && x<0.3 && y>0.3 && y<0.6){
-      message = L13;
+      message1 = L13[0];
+      message2 = L13[1];
+      message3 = L13[2];
+      color1 = color_L1;
+      color2 = color_L3;
+      color3 = color_L1;
     } else if(x>0.3 && x<0.6 && y>-0.6 && y<-0.3){
-      message = L12;
+      message1 = L12[0];
+      message2 = L12[1];
+      message3 = L12[2];
+      color1 = color_L1;
+      color2 = color_L2;
+      color3 = color_L1;
     } else if(x>-0.3 && x<0.3 && y<-0.3 && y>-0.6){
-      message = L15;
+      message1 = L15[0];
+      message2 = L15[1];
+      message3 = L15[2];
+      color1 = color_L1;
+      color2 = color_L5;
+      color3 = color_L1;
     } else if(x<-0.3 && x >-0.6 && y>-0.3 && y<0.3) {
-      message = L14;
+      message1 = L14[0];
+      message2 = L14[1];
+      message3 = L14[2];
+      color1 = color_L1;
+      color2 = color_L4;
+      color3 = color_L1;
     } else if(x >0.6 && y>0.6) {
-      message = L23;
+      message1 = L23[0];
+      message2 = L23[1];
+      message3 = L23[2];
+      color1 = color_L2;
+      color2 = color_L3;
+      color3 = color_L1;
     } else if(x >0.6 && y<-0.6) {
-      message = L25;
+      message1 = L25[0];
+      message2 = L25[1];
+      message3 = L25[2];
+      color1 = color_L2;
+      color2 = color_L5;
+      color3 = color_L1;
     } else if(x< -0.6 && y>0.6) {
-      message = L34;
+      message1 = L34[0];
+      message2 = L34[1];
+      message3 = L34[2];
+      color1 = color_L3;
+      color2 = color_L4;
+      color3 = color_L1;
     } else if(x<-0.6 &&  y< 0.6) {
-      message = L45;
+      message1 = L45[0];
+      message2 = L45[1];
+      message3 = L45[2];
+      color1 = color_L4;
+      color2 = color_L5;
+      color3 = color_L4;
     } else if(x<0.6 && x > 0.3&& y<0.6 && y>0.3) {
-      message = L123;
+      message1 = L123[0];
+      message2 = L123[1];
+      message3 = L123[2];
+      color1 = color_L1;
+      color2 = color_L2;
+      color3 = color_L3;
     } else if(x< 0.6&& x >0.3 && y<-0.3 && y>-0.6) {
-      message = L125;
+      message1 = L125[0];
+      message2 = L125[1];
+      message3 = L125[2];
+      color1 = color_L1;
+      color2 = color_L2;
+      color3 = color_L5;
     } else if(x<-0.3 && x >-0.6 && y<0.6 && y>0.3) {
-      message = L134;
+      message1 = L134[0];
+      message2 = L134[1];
+      message3 = L134[2];
+      color1 = color_L1;
+      color2 = color_L3;
+      color3 = color_L4;
     } else if(x<-0.3 && x > -0.6 && y<-0.3 && y>-0.6) {
-      message = L145;
+      message1 = L145[0];
+      message2 = L145[1];
+      message3 = L145[2];
+      color1 = color_L1;
+      color2 = color_L4;
+      color3 = color_L5;
     }
-    return message;
 }
 // update the text to show at the mouse position
 function update(mouse){
@@ -546,13 +666,13 @@ function update(mouse){
   d3MorphMap(data1,data2,coefficient,cur_projection);
 
   //Do the Poem Stuff Here
-  Phrase = pick_phrases(x,y);
+  pick_phrases(x,y);
   //Clear the textbox
   context.clearRect(0,0,640,600);
-  var metrics1 = context.measureText(Phrase);
+  var metrics1 = context.measureText(message1+message2+message3);
   var width1 = metrics1.width;
 
   //Draw the textbox
-  display_poem(context,x,y,width1 + 20,20+10,15,Phrase);
+  display_poem(context,x,y,width1 + 20,20+10,15,message1,message2,message3,color1,color2,color3);
 
 }
