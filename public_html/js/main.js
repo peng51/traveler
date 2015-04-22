@@ -4,11 +4,16 @@ var canvas, context;
 //Varibles holding the quadrants
 var firstQuadrantData,secondQuadrantData,thirdQuadrantData,fourthQuadrantData, centreData;
 
+var firstQuadrant,secondQuadrant,thirdQuadrant,fourthQuadrant, centre;
+
 // D3 variables for projecting the maps
 var projection, path, group;
 
 //variables for storing paths for different countries
 var data_US,data_CHN,data_RUS,data_ARA,data_IND;
+
+//Variable to help morph between source and Destination country
+var currentSource,currentDest;
 
 //Maps involved in the projection
 var data1,data2;
@@ -176,6 +181,11 @@ function setQuadrants(srclang)
   switch(srclang)
   {
     case "NA":
+    firstQuadrant = "CHN";
+    secondQuadrant = "RUS";
+    thirdQuadrant = "ARA";
+    fourthQuadrant = "IND";
+    centre = "US"
     firstQuadrantData = data_CHN;
     secondQuadrantData=data_RUS;
     thirdQuadrantData = data_ARA;
@@ -183,6 +193,11 @@ function setQuadrants(srclang)
     centreData = data_US;
     break;
     case "CHN":
+    firstQuadrant = "RUS";
+    secondQuadrant = "US";
+    thirdQuadrant = "ARA";
+    fourthQuadrant = "IND";
+    centre = "CHN"
     firstQuadrantData = data_RUS;
     secondQuadrantData=data_US;
     thirdQuadrantData = data_ARA;
@@ -190,6 +205,11 @@ function setQuadrants(srclang)
     centreData = data_CHN;
     break;
     case "RUS":
+    firstQuadrant = "CHN";
+    secondQuadrant = "US";
+    thirdQuadrant = "ARA";
+    fourthQuadrant = "IND";
+    centre = "RUS"
     firstQuadrantData = data_CHN;
     secondQuadrantData=data_US;
     thirdQuadrantData = data_ARA;
@@ -197,6 +217,11 @@ function setQuadrants(srclang)
     centreData = data_RUS;
     break;
     case "ARA":
+    firstQuadrant = "CHN";
+    secondQuadrant = "RUS";
+    thirdQuadrant = "US";
+    fourthQuadrant = "IND";
+    centre = "ARA"
     firstQuadrantData = data_CHN;
     secondQuadrantData=data_RUS;
     thirdQuadrantData = data_US;
@@ -204,6 +229,11 @@ function setQuadrants(srclang)
     centreData = data_ARA;
     break;
     case "IND":
+    firstQuadrant = "CHN";
+    secondQuadrant = "RUS";
+    thirdQuadrant = "US";
+    fourthQuadrant = "IND";
+    centre = "IND"
     firstQuadrantData = data_CHN;
     secondQuadrantData=data_RUS;
     thirdQuadrantData = data_US;
@@ -266,7 +296,7 @@ function d3MorphMap(data1,data2,coefficient,project){
 
           var int = d3.interpolateString(pathSource, pathDest);
 
-var t = coefficient;
+  var t = coefficient;
 
 group.selectAll("path").attr("d",path);
 group.selectAll("path").attr("d",int(t));
@@ -315,40 +345,26 @@ update(mouse);
 }
 
 
-function pick_maps(x,y)
+function getData2(x,y)
 {
-    //First Quadrant
+  //First Quadrant
     if(x>=0 && x<=1 && y>=0 && y<=1)
     {
       if(x>=0 && x <=0.5 && y>=0 && y<=0.5)
       {
-        data1 = data_RUS;
-        data2 = data_US;
+        data2 = centreData;
+        currentDest = centre;
       }
-      /*else if(x>0.5 && x<=1 && y>=0 && y<=0.5)
-      {
-        data1 = data_US;
-        data2 = data_CHN;
-      }
-      else if(x>0.5 && x<=1 && y>0.5 && y<=1)
-      {
-        data1 = data_RUS;
-        data2 = data_CHN;
-      }
-      else if(x>=0 && x<=0.5 && y>0.5 && y<=1)
-      {
-        data1 = data_US;
-        data2 = data_RUS;
-      }*/
+      
       else if((y/x)<=1)
-      {
-        data1 = data_RUS;
-        data2 = data_CHN;
+      {        
+        data2 = firstQuadrantData;
+        currentDest = firstQuadrant;
       }
       else if((y/x)>1)
       {
-        data1 = data_US;
-        data2 = data_RUS;
+        data2 = secondQuadrantData;
+        currentDest = secondQuadrant;
       }
     }
 
@@ -357,19 +373,19 @@ function pick_maps(x,y)
     {
       if(x<0 && x >=-0.5 && y>=0 && y<=0.5)
       {
-        data1 = data_RUS;
-        data2 = data_US;
+        data2 = centreData;
+        currentDest = centre;
       }
       
       else if((y/x)>=-1)
       {
-        data1 = data_RUS;
-        data2 = data_ARA;
+        data2 = thirdQuadrantData;
+        currentDest = thirdQuadrant;
       }
       else if((y/x)<-1)
       {
-        data1 = data_US;
-        data2 = data_RUS;
+        data2 = secondQuadrantData;
+        currentDest = secondQuadrant;
       }    
     }
     
@@ -379,19 +395,18 @@ function pick_maps(x,y)
     {
       if(x<0 && x >=-0.5 && y<=0 && y>=-0.5)
       {
-        data1 = data_RUS;
-        data2 = data_US;
-      }
-      
+        data2 = centreData;
+        currentDest = Centre;
+      }      
       else if((y/x)<=1)
       {
-        data1 = data_RUS;
-        data2 = data_ARA;
+       data2 = thirdQuadrantData;
+       currentDest = thirdQuadrant;
       }
       else if((y/x)>1)
       {
-        data1 = data_CHN;
-        data2 = data_IND;
+        data2 = fourthQuadrantData;
+        currentDest = fourthQuadrant;
       }
     }
 
@@ -400,22 +415,50 @@ function pick_maps(x,y)
     {
       if(x>=0 && x <=0.5 && y<=0 && y>=-0.5)
       {
-        data1 = data_RUS;
-        data2 = data_US;
+        data2 = centreData;
+        currentDest = centre;
       }
       
       else if((y/x)<=-1)
       {
-        data1 = data_CHN;
-        data2 = data_IND;
+        data2 = fourthQuadrantData;
+        currentDest = fourthQuadrant;
       }
       else if((y/x)>-1)
       {
-        data1 = data_RUS;
-        data2 = data_CHN;
+        data2 = firstQuadrantData;
+        currentDest = firstQuadrant;
       }
     }
-    
+}
+
+function getData1(currentDest)
+{
+  switch(currentDest)
+  {
+    case "US":
+    data1 = data_RUS;
+    break;
+    case "CHN":
+    data1 = data_RUS;
+    break;
+    case "RUS":
+    data1 = data_ARA;
+    break;
+    case "ARA":
+    data1 = data_RUS;
+    break;
+    case "IND":
+    data1 = data_CHN;
+    break;
+  }
+}
+
+function pick_maps(x,y)
+{
+    getData2(x,y);
+    //Get Data1 based on Data2   
+    getData1(currentDest);
 }
 
 
