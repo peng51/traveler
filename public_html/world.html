@@ -15,21 +15,28 @@
     			}
 			.overlay {
     				position: fixed;
-    				width: 74%;
-    				height: 70%;
+    				width: 72%;
+    				height: 68%;
     				left: 12%;
-    				top: 0;
+    				top: 5%;
     				z-index: 10;
   			}
+			h2 {
+				font-family: "Times New Roman", Georgia, sans-serif;
+				font-style: oblique;
+				font-size: 23px;
+				margin-left: 25%;
+			}
     		</style>
 	</head>
 
 	<body>
+		<h2>Non-Arrival Flights: a digital remapping of linguistic borders</h2>
+
 		<script src="js/d3.v3.min.js"></script>
 		<script src="js/topojson.js"></script>
 		<script src="js/datamaps.world.min.js"></script>
-		<div id="wrapper" class="overlay"></div>
-		
+		<div id="wrapper" class="overlay"></div>		
 		<!--script main function -->
 		<script>
     			var map = new Datamap({
