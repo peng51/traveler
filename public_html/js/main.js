@@ -377,7 +377,7 @@ function pick_maps(x,y)
     //Third Quadrant
     else if(x<=0 && x>=-1 && y<=0 && y>=-1)
     {
-      if(x<0 && x >=-0.5 && y<=0 && y>=0.5)
+      if(x<0 && x >=-0.5 && y<=0 && y>=-0.5)
       {
         data1 = data_RUS;
         data2 = data_US;
@@ -398,7 +398,7 @@ function pick_maps(x,y)
     //Fourth Quadrant
     else if(x>=0 && x<=1 && y<=0 && y>=-1)
     {
-      if(x>=0 && x <=0.5 && y<=0 && y>=0.5)
+      if(x>=0 && x <=0.5 && y<=0 && y>=-0.5)
       {
         data1 = data_RUS;
         data2 = data_US;
@@ -406,13 +406,13 @@ function pick_maps(x,y)
       
       else if((y/x)<=-1)
       {
-        data1 = data_RUS;
-        data2 = data_CHN;
+        data1 = data_CHN;
+        data2 = data_IND;
       }
       else if((y/x)>-1)
       {
-        data1 = data_CHN;
-        data2 = data_IND;
+        data1 = data_RUS;
+        data2 = data_CHN;
       }
     }
     
