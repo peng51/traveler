@@ -318,90 +318,104 @@ update(mouse);
 function pick_maps(x,y)
 {
     //First Quadrant
-    if(x>=0 && x <=0.5 && y>=0 && y<=0.5)
+    if(x>=0 && x<=1 && y>=0 && y<=1)
     {
-      data1 = data_RUS;
-      data2 = data_US;
-    }
-    /*else if(x>0.5 && x<=1 && y>=0 && y<=0.5)
-    {
-      data1 = data_US;
-      data2 = data_CHN;
-    }
-    else if(x>0.5 && x<=1 && y>0.5 && y<=1)
-    {
-      data1 = data_RUS;
-      data2 = data_CHN;
-    }
-    else if(x>=0 && x<=0.5 && y>0.5 && y<=1)
-    {
-      data1 = data_US;
-      data2 = data_RUS;
-    }*/
-    else if((y/x)<=1)
-    {
-      data1 = data_RUS;
-      data2 = data_CHN;
-    }
-    else if((y/x)>1)
-    {
-      data1 = data_US;
-      data2 = data_RUS;
+      if(x>=0 && x <=0.5 && y>=0 && y<=0.5)
+      {
+        data1 = data_RUS;
+        data2 = data_US;
+      }
+      /*else if(x>0.5 && x<=1 && y>=0 && y<=0.5)
+      {
+        data1 = data_US;
+        data2 = data_CHN;
+      }
+      else if(x>0.5 && x<=1 && y>0.5 && y<=1)
+      {
+        data1 = data_RUS;
+        data2 = data_CHN;
+      }
+      else if(x>=0 && x<=0.5 && y>0.5 && y<=1)
+      {
+        data1 = data_US;
+        data2 = data_RUS;
+      }*/
+      else if((y/x)<=1)
+      {
+        data1 = data_RUS;
+        data2 = data_CHN;
+      }
+      else if((y/x)>1)
+      {
+        data1 = data_US;
+        data2 = data_RUS;
+      }
     }
 
-    /*//Second Quadrant
-    if(x<0 && x >=-0.5 && y>=0 && y<=0.5)
+    //Second Quadrant
+    else if(x<=0 && x>=-1 && y>=0 && y<=1)
     {
-      data1 = data_RUS;
-      data2 = data_US;
+      if(x<0 && x >=-0.5 && y>=0 && y<=0.5)
+      {
+        data1 = data_RUS;
+        data2 = data_US;
+      }
+      
+      else if((y/x)>=-1)
+      {
+        data1 = data_RUS;
+        data2 = data_ARA;
+      }
+      else if((y/x)<-1)
+      {
+        data1 = data_US;
+        data2 = data_RUS;
+      }    
     }
     
-    else if((y/x)>=-1)
-    {
-      data1 = data_US;
-      data2 = data_ARA;
-    }
-    else if((y/x)<-1)
-    {
-      data1 = data_US;
-      data2 = data_RUS;
-    }    
 
     //Third Quadrant
-    if(x<0 && x >=-0.5 && y<=0 && y>=0.5)
+    else if(x<=0 && x>=-1 && y<=0 && y>=-1)
     {
-      data1 = data_RUS;
-      data2 = data_US;
-    }
-    
-    else if((y/x)<=1)
-    {
-      data1 = data_US;
-      data2 = data_ARA;
-    }
-    else if((y/x)>1)
-    {
-      data1 = data_US;
-      data2 = data_IND;
+      if(x<0 && x >=-0.5 && y<=0 && y>=0.5)
+      {
+        data1 = data_RUS;
+        data2 = data_US;
+      }
+      
+      else if((y/x)<=1)
+      {
+        data1 = data_RUS;
+        data2 = data_ARA;
+      }
+      else if((y/x)>1)
+      {
+        data1 = data_CHN;
+        data2 = data_IND;
+      }
     }
 
     //Fourth Quadrant
-    if(x>=0 && x <=0.5 && y<=0 && y>=0.5)
+    else if(x>=0 && x<=1 && y<=0 && y>=-1)
     {
-      data1 = data_RUS;
-      data2 = data_US;
+      if(x>=0 && x <=0.5 && y<=0 && y>=0.5)
+      {
+        data1 = data_RUS;
+        data2 = data_US;
+      }
+      
+      else if((y/x)<=-1)
+      {
+        data1 = data_RUS;
+        data2 = data_CHN;
+      }
+      else if((y/x)>-1)
+      {
+        data1 = data_CHN;
+        data2 = data_IND;
+      }
     }
     
-    else if((y/x)<=-1)
-    {
-      data1 = data_US;
-      data2 = data_CHN;
-    }
-    else if((y/x)>-1)
-    {
-      data1 = data_US;
-      data2 = data_IND;
-    }*/
 }
 
 
