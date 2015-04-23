@@ -22,7 +22,7 @@ var data1,data2;
 var poems;
 
 //Source Language
-var srcLang = "NA";
+var srcLang = "IND";
 
 //List of Projections we will use
 var projections= ['mercator','','','',''];
@@ -145,7 +145,8 @@ function loadMaps() {
 
 function loadPoems() {
     jQuery.ajax({
-         url:    'data/'+srcLang+'.json',
+         //url:    'data/'+srcLang+'.json',
+         url:    'data/'+"test"+'.json',
          success: function(data){
             poems = data;
           },
@@ -232,7 +233,7 @@ function setQuadrants(srclang)
     firstQuadrant = "CHN";
     secondQuadrant = "RUS";
     thirdQuadrant = "US";
-    fourthQuadrant = "IND";
+    fourthQuadrant = "ARA";
     centre = "IND"
     firstQuadrantData = data_CHN;
     secondQuadrantData=data_RUS;
@@ -411,7 +412,7 @@ function getData2(x,y)
     }
 
     //Fourth Quadrant
-    else if(x>=0 && x<=1 && y<=0 && y>=-1)
+    else if(x>0 && x<=1 && y<=0 && y>=-1)
     {
       if(x>=0 && x <=0.5 && y<=0 && y>=-0.5)
       {
@@ -449,7 +450,7 @@ function getData1(currentDest)
     data1 = data_RUS;
     break;
     case "IND":
-    data1 = data_CHN;
+    data1 = data_ARA;
     break;
   }
 }
