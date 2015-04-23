@@ -314,13 +314,13 @@ function setQuadrants(srclang)
     fourthQuadrant = "RUS";
     centre = "ARA"
     firstQuadrantData = data_IND;
-    secondQuadrantData=data_ENG;
+    secondQuadrantData=data_US;
     thirdQuadrantData = data_CHN;
     fourthQuadrantData = data_RUS;
     centreData = data_ARA;
     color_L1 = color_ARA;
     color_L2 = color_IND;
-    color_L3 = color_ENG;
+    color_L3 = color_US;
     color_L4 = color_CHN;
     color_L5 = color_RUS;
     break;
