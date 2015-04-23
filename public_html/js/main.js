@@ -42,7 +42,7 @@ var data1,data2;
 var poems;
 
 //Source Language
-var srcLang = "NA";
+var srcLang = window.centre;
 
 //List of Projections we will use
 var projections= ['mercator','cylindricalEqualArea','homolosine','stereographic'];
@@ -83,7 +83,7 @@ var L125 = '';
 document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
 // Periodically change the poems
-window.setInterval(getnewpoem, 300000);
+window.setInterval(getnewpoem, 3000);
 
 // Periodically change the projection
 window.setInterval(changeprojection, 5000);
