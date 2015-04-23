@@ -13,6 +13,11 @@ var projection, path, group;
 var data_US,data_CHN,data_RUS,data_ARA,data_IND;
 
 //Variables for country color code
+var color_US  = '#1E90FF';
+var color_CHN = '#FF0000';
+var color_RUS = '#800000';
+var color_ARA = '#990066';
+var color_IND = '#FFA500';
 var color_L1, color_L2, color_L3, color_L4, color_L5;
 
 //Variables for storing color information related to languages
@@ -34,7 +39,7 @@ var data1,data2;
 var poems;
 
 //Source Language
-var srcLang = "IND";
+var srcLang = "NA";
 
 //List of Projections we will use
 var projections= ['mercator','','','',''];
@@ -84,7 +89,7 @@ window.setInterval(getnewpoem, 5000);
 
 //Here is where all the heavy lifting happens
 loadMaps();
-initcolors();
+//initcolors();
 loadPoems();
 setQuadrants(srcLang);
 getnewpoem();
@@ -168,8 +173,7 @@ function loadMaps() {
 
 function loadPoems() {
     jQuery.ajax({
-         //url:    'data/'+srcLang+'.json',
-         url:    'data/'+"test"+'.json',
+         url:    'data/'+srcLang+'.json',
          success: function(data){
             poems = data;
           },
@@ -196,7 +200,7 @@ function getnewpoem() {
   L134 = (poems[poemnumber][0]['L134']);
   L145 = (poems[poemnumber][0]['L145']);
   L125 = (poems[poemnumber][0]['L125']);
-
+  console.log(L1);
   }
 
 
@@ -215,54 +219,79 @@ function setQuadrants(srclang)
     thirdQuadrantData = data_ARA;
     fourthQuadrantData = data_IND;
     centreData = data_US;
+    color_L1 = color_US;
+    color_L2 = color_CHN;
+    color_L3 = color_RUS;
+    color_L4 = color_ARA;
+    color_L5 = color_IND;
     break;
     case "CHN":
     firstQuadrant = "RUS";
-    secondQuadrant = "US";
-    thirdQuadrant = "ARA";
-    fourthQuadrant = "IND";
+    secondQuadrant = "ARA";
+    thirdQuadrant = "IND";
+    fourthQuadrant = "US";
     centre = "CHN"
     firstQuadrantData = data_RUS;
-    secondQuadrantData=data_US;
-    thirdQuadrantData = data_ARA;
-    fourthQuadrantData = data_IND;
+    secondQuadrantData=data_ARA;
+    thirdQuadrantData = data_IND;
+    fourthQuadrantData = data_US;
     centreData = data_CHN;
+    color_L1 = color_CHN;
+    color_L2 = color_RUS;
+    color_L3 = color_ARA;
+    color_L4 = color_IND;
+    color_L5 = color_US;
     break;
     case "RUS":
-    firstQuadrant = "CHN";
-    secondQuadrant = "US";
-    thirdQuadrant = "ARA";
-    fourthQuadrant = "IND";
+    firstQuadrant = "ARA";
+    secondQuadrant = "IND";
+    thirdQuadrant = "US";
+    fourthQuadrant = "CHN";
     centre = "RUS"
-    firstQuadrantData = data_CHN;
-    secondQuadrantData=data_US;
-    thirdQuadrantData = data_ARA;
-    fourthQuadrantData = data_IND;
+    firstQuadrantData = data_ARA;
+    secondQuadrantData=data_IND;
+    thirdQuadrantData = data_US;
+    fourthQuadrantData = data_CHN;
     centreData = data_RUS;
+    color_L1 = color_RUS;
+    color_L2 = color_ARA;
+    color_L3 = color_IND;
+    color_L4 = color_US;
+    color_L5 = color_CHN;
     break;
     case "ARA":
-    firstQuadrant = "CHN";
-    secondQuadrant = "RUS";
-    thirdQuadrant = "US";
-    fourthQuadrant = "IND";
+    firstQuadrant = "IND";
+    secondQuadrant = "US";
+    thirdQuadrant = "CHN";
+    fourthQuadrant = "RUS";
     centre = "ARA"
-    firstQuadrantData = data_CHN;
-    secondQuadrantData=data_RUS;
-    thirdQuadrantData = data_US;
-    fourthQuadrantData = data_IND;
+    firstQuadrantData = data_IND;
+    secondQuadrantData=data_ENG;
+    thirdQuadrantData = data_CHN;
+    fourthQuadrantData = data_RUS;
     centreData = data_ARA;
+    color_L1 = color_ARA;
+    color_L2 = color_IND;
+    color_L3 = color_ENG;
+    color_L4 = color_CHN;
+    color_L5 = color_RUS;
     break;
     case "IND":
-    firstQuadrant = "CHN";
-    secondQuadrant = "RUS";
-    thirdQuadrant = "US";
+    firstQuadrant = "US";
+    secondQuadrant = "CHN";
+    thirdQuadrant = "RUS";
     fourthQuadrant = "ARA";
     centre = "IND"
-    firstQuadrantData = data_CHN;
-    secondQuadrantData=data_RUS;
-    thirdQuadrantData = data_US;
+    firstQuadrantData = data_US;
+    secondQuadrantData=data_CHN;
+    thirdQuadrantData = data_RUS;
     fourthQuadrantData = data_ARA;
     centreData = data_IND;
+    color_L1 = color_IND;
+    color_L2 = color_US;
+    color_L3 = color_CHN;
+    color_L4 = color_RUS;
+    color_L5 = color_ARA;
     break;
   }
 
@@ -432,7 +461,7 @@ function getData2(x,y)
       if(x<0 && x >=-0.5 && y<=0 && y>=-0.5)
       {
         data2 = centreData;
-        currentDest = Centre;
+        currentDest = centre;
       }
       else if((y/x)<=1)
       {
