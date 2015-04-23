@@ -50,7 +50,7 @@ var cur_projection='mercator';
 
 //Poem Number
 var poemnumber=0;
-var max_poems = 1;
+var max_poems = 50;
 var min_poems = 0;
 
 //Language Phrases
@@ -81,7 +81,7 @@ context = canvas.getContext('2d');
 document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
 // Periodically change the poems
-window.setInterval(getnewpoem, 5000);
+window.setInterval(getnewpoem, 300000);
 
 // Periodically change the projection
 //window.setInterval(changeprojection, 5000);
@@ -200,7 +200,6 @@ function getnewpoem() {
   L134 = (poems[poemnumber][0]['L134']);
   L145 = (poems[poemnumber][0]['L145']);
   L125 = (poems[poemnumber][0]['L125']);
-  console.log(L1);
   }
 
 
@@ -600,7 +599,7 @@ function pick_phrases(x,y){
       color1 = color_L1;
       color2 = color_L3;
       color3 = color_L1;
-    } else if(x>0.3 && x<0.6 && y>-0.6 && y<-0.3){
+    } else if(x>0.3 && x<0.6 && y>-0.3 && y<0.3){
       message1 = L12[0];
       message2 = L12[1];
       message3 = L12[2];
@@ -698,7 +697,7 @@ function update(mouse){
   //Do the Poem Stuff Here
   pick_phrases(x,y);
   //Clear the textbox
-  context.clearRect(0,0,640,600);
+  context.clearRect(0,0,800,800);
   var metrics1 = context.measureText(message1+message2+message3);
   var width1 = metrics1.width;
 
