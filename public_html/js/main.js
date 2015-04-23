@@ -23,6 +23,15 @@ var color_ARA = '#990066';
 var color_IND = '#FFA500';
 var color_L1, color_L2, color_L3, color_L4, color_L5;
 
+
+//Variables for country fonts
+var font_US  = 'Garamond';
+var font_CHN = 'Arial';
+var font_RUS = 'Courier';
+var font_ARA = 'Calisto';
+var font_IND = 'Batang';
+var font_L1, font_L2, font_L3, font_L4, font_L5;
+
 //Variables for storing color information related to languages
 var message1 = 'Veryfiy pick_phrases';
 var message2 = 'Veryfiy pick_phrases';
@@ -31,6 +40,12 @@ var message3 = 'Veryfiy pick_phrases';
 var color1;
 var color2;
 var color3;
+
+
+var font1;
+var font2;
+var font3;
+
 
 //Variable to help morph between source and Destination country
 var currentSource,currentDest;
@@ -83,7 +98,7 @@ var L125 = '';
 document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
 // Periodically change the poems
-window.setInterval(getnewpoem, 3000);
+window.setInterval(getnewpoem, 30000);
 
 // Periodically change the projection
 window.setInterval(changeprojection, 5000);
@@ -133,7 +148,7 @@ function initThreeJS(){
 	var spriteMaterial = new 
 		THREE.SpriteMaterial({map:texture, useScreenCoordinates:true, alignment:THREE.SpriteAlignment.topLeft});	
 	sprite = new THREE.Sprite(spriteMaterial);
-	sprite.scale.set(150,150,1.0);
+	sprite.scale.set(200,100,1.0);
       	sprite.position.set(50, 50, 0 ); 
 	scene.add(sprite);		
 }
@@ -272,6 +287,12 @@ function setQuadrants(srclang)
     color_L3 = color_RUS;
     color_L4 = color_ARA;
     color_L5 = color_IND;
+    
+    font_L1= font_US;
+    font_L2= font_CHN;
+    font_L3= font_RUS;
+    font_L4= font_ARA;
+    font_L5= font_IND;
     break;
     case "CHN":
     firstQuadrant = "RUS";
@@ -289,6 +310,11 @@ function setQuadrants(srclang)
     color_L3 = color_ARA;
     color_L4 = color_IND;
     color_L5 = color_US;
+    font_L1= font_CHN;
+    font_L2= font_RUS;
+    font_L3= font_ARA;
+    font_L4= font_IND;
+    font_L5= font_US;
     break;
     case "RUS":
     firstQuadrant = "ARA";
@@ -306,6 +332,11 @@ function setQuadrants(srclang)
     color_L3 = color_IND;
     color_L4 = color_US;
     color_L5 = color_CHN;
+    font_L1= font_RUS;
+    font_L2= font_ARA;
+    font_L3= font_IND;
+    font_L4= font_US;
+    font_L5= font_CHN;
     break;
     case "ARA":
     firstQuadrant = "IND";
@@ -323,6 +354,11 @@ function setQuadrants(srclang)
     color_L3 = color_US;
     color_L4 = color_CHN;
     color_L5 = color_RUS;
+    font_L1= font_ARA;
+    font_L2= font_IND;
+    font_L3= font_US;
+    font_L4= font_CHN;
+    font_L5= font_RUS;
     break;
     case "IND":
     firstQuadrant = "US";
@@ -340,6 +376,11 @@ function setQuadrants(srclang)
     color_L3 = color_CHN;
     color_L4 = color_RUS;
     color_L5 = color_ARA;
+    font_L1= font_IND;
+    font_L2= font_US;
+    font_L3= font_CHN;
+    font_L4= font_RUS;
+    font_L5= font_ARA;
     break;
   }
 
@@ -405,7 +446,7 @@ group.selectAll("path").attr("d",int(t));
 }
 
 // A utility function to draw a rectangle with rounded corners.
-function display_poem(context,mouse,x,y,width,height,radius,m1,m2,m3,c1,c2,c3){
+function display_poem(context,mouse,x,y,width,height,radius,m1,m2,m3,c1,c2,c3,f1,f2,f3){
  //context.beginPath();
   //context.moveTo(x,y+radius);
   //context.lineTo(x,y+height-radius);
@@ -430,19 +471,21 @@ gradient.addColorStop("1.0", 'red');*/
 canvas.width = width;
 //canvas.height = height;
 // Fill with gradient
-context.font="30px Georgia"
+context.font="30px" + f1;
 context.fillStyle = c1;
 context.fillText(m1, 10, 25);
 
  var metrics1 = context.measureText(m1);
  var width1 = metrics1.width;
 
+context.font="30px" + f2;
 context.fillStyle = c2;
 context.fillText(m2, width1+20, 25);
 
 var metrics2 = context.measureText(m1+m2);
 var width2 = metrics2.width;
 
+context.font="30px" + f3;
 context.fillStyle = c3;
 context.fillText(m3, width2+30, 25);
 
@@ -629,6 +672,9 @@ function pick_phrases(x,y){
       color1 = color_L1;
       color2 = color_L1;
       color3 = color_L1;
+      font1 = font_L1;
+      font2 = font_L1;
+      font3 = font_L1;
     } else if(x>0.6 && y>-0.6 && y <0.6){
       message1 = L2[0];
       message2 = L2[1];
@@ -636,6 +682,9 @@ function pick_phrases(x,y){
       color1 = color_L2;
       color2 = color_L2;
       color3 = color_L2;
+      font1 = font_L2;
+      font2 = font_L2;
+      font3 = font_L2;
     } else if(x<0.6 && x>-0.6 && y >0.6){
       message1 = L3[0];
       message2 = L3[1];
@@ -643,6 +692,9 @@ function pick_phrases(x,y){
       color1 = color_L3;
       color2 = color_L3;
       color3 = color_L3;
+      font1 = font_L3;
+      font2 = font_L3;
+      font3 = font_L3;
     } else if(x<-0.6 && y>-0.6 && y <0.6){
       message1 = L4[0];
       message2 = L4[1];
@@ -650,6 +702,9 @@ function pick_phrases(x,y){
       color1 = color_L4;
       color2 = color_L4;
       color3 = color_L4;
+      font1 = font_L4;
+      font2 = font_L4;
+      font3 = font_L4;
     } else if(x>-0.6 && x<0.6 && y < -0.6) {
       message1 = L5[0];
       message2 = L5[1];
@@ -657,6 +712,9 @@ function pick_phrases(x,y){
       color1 = color_L5;
       color2 = color_L5;
       color3 = color_L5;
+      font1 = font_L5;
+      font2 = font_L5;
+      font3 = font_L5;
     } else if(x>-0.3 && x<0.3 && y>0.3 && y<0.6){
       message1 = L13[0];
       message2 = L13[1];
@@ -664,6 +722,9 @@ function pick_phrases(x,y){
       color1 = color_L1;
       color2 = color_L3;
       color3 = color_L1;
+      font1 = font_L1;
+      font2 = font_L3;
+      font3 = font_L1;
     } else if(x>0.3 && x<0.6 && y>-0.3 && y<0.3){
       message1 = L12[0];
       message2 = L12[1];
@@ -671,6 +732,9 @@ function pick_phrases(x,y){
       color1 = color_L1;
       color2 = color_L2;
       color3 = color_L1;
+      font1 = font_L1;
+      font2 = font_L2;
+      font3 = font_L1;
     } else if(x>-0.3 && x<0.3 && y<-0.3 && y>-0.6){
       message1 = L15[0];
       message2 = L15[1];
@@ -678,6 +742,9 @@ function pick_phrases(x,y){
       color1 = color_L1;
       color2 = color_L5;
       color3 = color_L1;
+      font1 = font_L1;
+      font2 = font_L5;
+      font3 = font_L1;
     } else if(x<-0.3 && x >-0.6 && y>-0.3 && y<0.3) {
       message1 = L14[0];
       message2 = L14[1];
@@ -685,6 +752,9 @@ function pick_phrases(x,y){
       color1 = color_L1;
       color2 = color_L4;
       color3 = color_L1;
+      font1 = font_L1;
+      font2 = font_L4;
+      font3 = font_L1;
     } else if(x >0.6 && y>0.6) {
       message1 = L23[0];
       message2 = L23[1];
@@ -692,6 +762,9 @@ function pick_phrases(x,y){
       color1 = color_L2;
       color2 = color_L3;
       color3 = color_L1;
+      font1 = font_L2;
+      font2 = font_L3;
+      font3 = font_L1;
     } else if(x >0.6 && y<-0.6) {
       message1 = L25[0];
       message2 = L25[1];
@@ -699,6 +772,9 @@ function pick_phrases(x,y){
       color1 = color_L2;
       color2 = color_L5;
       color3 = color_L1;
+      font1 = font_L2;
+      font2 = font_L5;
+      font3 = font_L1;
     } else if(x< -0.6 && y>0.6) {
       message1 = L34[0];
       message2 = L34[1];
@@ -706,6 +782,9 @@ function pick_phrases(x,y){
       color1 = color_L3;
       color2 = color_L4;
       color3 = color_L1;
+      font1 = font_L3;
+      font2 = font_L4;
+      font3 = font_L1;
     } else if(x<-0.6 &&  y< 0.6) {
       message1 = L45[0];
       message2 = L45[1];
@@ -713,6 +792,9 @@ function pick_phrases(x,y){
       color1 = color_L4;
       color2 = color_L5;
       color3 = color_L4;
+      font1 = font_L4;
+      font2 = font_L5;
+      font3 = font_L4;
     } else if(x<0.6 && x > 0.3&& y<0.6 && y>0.3) {
       message1 = L123[0];
       message2 = L123[1];
@@ -720,6 +802,9 @@ function pick_phrases(x,y){
       color1 = color_L1;
       color2 = color_L2;
       color3 = color_L3;
+      font1 = font_L1;
+      font2 = font_L2;
+      font3 = font_L3;
     } else if(x< 0.6&& x >0.3 && y<-0.3 && y>-0.6) {
       message1 = L125[0];
       message2 = L125[1];
@@ -727,6 +812,9 @@ function pick_phrases(x,y){
       color1 = color_L1;
       color2 = color_L2;
       color3 = color_L5;
+      font1 = font_L1;
+      font2 = font_L2;
+      font3 = font_L5;
     } else if(x<-0.3 && x >-0.6 && y<0.6 && y>0.3) {
       message1 = L134[0];
       message2 = L134[1];
@@ -734,6 +822,9 @@ function pick_phrases(x,y){
       color1 = color_L1;
       color2 = color_L3;
       color3 = color_L4;
+      font1 = font_L1;
+      font2 = font_L3;
+      font3 = font_L4;
     } else if(x<-0.3 && x > -0.6 && y<-0.3 && y>-0.6) {
       message1 = L145[0];
       message2 = L145[1];
@@ -741,6 +832,9 @@ function pick_phrases(x,y){
       color1 = color_L1;
       color2 = color_L4;
       color3 = color_L5;
+      font1 = font_L1;
+      font2 = font_L4;
+      font3 = font_L5;
     }
 }
 // update the text to show at the mouse position
@@ -767,6 +861,6 @@ function update(mouse){
   var width1 = metrics1.width;
 
   //Draw the textbox
-  display_poem(context,mouse,x,y,width1 + 20,20+10,15,message1,message2,message3,color1,color2,color3);
+  display_poem(context,mouse,x,y,width1 + 20,20+10,15,message1,message2,message3,color1,color2,color3,font1,font2,font3);
 
 }
