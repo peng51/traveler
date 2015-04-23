@@ -149,7 +149,7 @@ function initThreeJS(){
 		THREE.SpriteMaterial({map:texture, useScreenCoordinates:true, alignment:THREE.SpriteAlignment.topLeft});	
 	sprite = new THREE.Sprite(spriteMaterial);
 
-	sprite.scale.set(200,100,2.0);
+	sprite.scale.set(200,200,2.0);
       	sprite.position.set(50, 50, 0 ); 
 	scene.add(sprite);		
 }
@@ -447,7 +447,7 @@ group.selectAll("path").attr("d",int(t));
 }
 
 // A utility function to draw a rectangle with rounded corners.
-function display_poem(context,mouse,x,y,width,height,radius,m1,m2,m3,c1,c2,c3,f1,f2,f3){
+function display_poem(context,mouse,x,y,width,height,radius,m1,m2,m3,c1,c2,c3){
  //context.beginPath();
   //context.moveTo(x,y+radius);
   //context.lineTo(x,y+height-radius);
@@ -475,21 +475,21 @@ if(typeof m1 === "undefined" || typeof m2 === "undefined" || typeof m3 === "unde
 canvas.width = width;
 //canvas.height = height;
 // Fill with gradient
-context.font="30px" + f1;
+context.font="30px Georgia";
 context.fillStyle = c1;
 context.fillText(m1, 10, 25);
 
  var metrics1 = context.measureText(m1);
  var width1 = metrics1.width;
 
-context.font="30px" + f2;
+//context.font="30px" + f2;
 context.fillStyle = c2;
 context.fillText(m2, width1+20, 25);
 
 var metrics2 = context.measureText(m1+m2);
 var width2 = metrics2.width;
 
-context.font="30px" + f3;
+//context.font="30px" + f3;
 context.fillStyle = c3;
 context.fillText(m3, width2+30, 25);
 
@@ -865,6 +865,6 @@ function update(mouse){
   var width1 = metrics1.width;
 
   //Draw the textbox
-  display_poem(context,mouse,x,y,width1 + 20,20+10,15,message1,message2,message3,color1,color2,color3,font1,font2,font3);
+  display_poem(context,mouse,x,y,width1 + 20,20+10,15,message1,message2,message3,color1,color2,color3);
 
 }
