@@ -133,7 +133,7 @@ function initThreeJS(){
 	var spriteMaterial = new 
 		THREE.SpriteMaterial({map:texture, useScreenCoordinates:true, alignment:THREE.SpriteAlignment.topLeft});	
 	sprite = new THREE.Sprite(spriteMaterial);
-	sprite.scale.set(200,100,1.0);
+	sprite.scale.set(200,100,2.0);
       	sprite.position.set(50, 50, 0 ); 
 	scene.add(sprite);		
 }
@@ -453,12 +453,12 @@ ww = window.innerWidth;
 console.log("window width " + ww);
 console.log("mouse.x " + mouse.x);
 console.log("text width " + width);
-if (mouse.x + width / 3 + 45 < ww)
+if (mouse.x + width / 2 + 10 < ww)
 	sprite.position.set(mouse.x, mouse.y, 0 );
 else{
 	//console.log(ww - width / 3);
 	//console.log(mouse.x - width / 3);	
-	sprite.position.set(ww - width / 3 - 45, mouse.y, 0);
+	sprite.position.set(ww - width / 2 - 10, mouse.y, 0);
     }
 }
 
