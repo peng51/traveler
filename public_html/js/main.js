@@ -133,7 +133,7 @@ function initThreeJS(){
 	var spriteMaterial = new 
 		THREE.SpriteMaterial({map:texture, useScreenCoordinates:true, alignment:THREE.SpriteAlignment.topLeft});	
 	sprite = new THREE.Sprite(spriteMaterial);
-	sprite.scale.set(150,150,1.0);
+	sprite.scale.set(200,100,1.0);
       	sprite.position.set(50, 50, 0 ); 
 	scene.add(sprite);		
 }
@@ -450,9 +450,9 @@ context.fillText(m3, width2+30, 25);
 texture.needsUpdate = true;
 // update the textbox position
 ww = window.innerWidth;
-//console.log("window width " + ww);
-//console.log("mouse.x " + mouse.x);
-//console.log("text width " + width / 5);
+console.log("window width " + ww);
+console.log("mouse.x " + mouse.x);
+console.log("text width " + width);
 if (mouse.x + width / 3 + 45 < ww)
 	sprite.position.set(mouse.x, mouse.y, 0 );
 else{
