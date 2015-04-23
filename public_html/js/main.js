@@ -148,7 +148,8 @@ function initThreeJS(){
 	var spriteMaterial = new 
 		THREE.SpriteMaterial({map:texture, useScreenCoordinates:true, alignment:THREE.SpriteAlignment.topLeft});	
 	sprite = new THREE.Sprite(spriteMaterial);
-	sprite.scale.set(200,100,1.0);
+
+	sprite.scale.set(200,100,2.0);
       	sprite.position.set(50, 50, 0 ); 
 	scene.add(sprite);		
 }
@@ -468,6 +469,9 @@ gradient.addColorStop("0", 'red');
 gradient.addColorStop("0.5", 'red');
 gradient.addColorStop("1.0", 'red');*/
 
+if(typeof m1 === "undefined" || typeof m2 === "undefined" || typeof m3 === "undefined")
+	return "";
+
 canvas.width = width;
 //canvas.height = height;
 // Fill with gradient
@@ -493,15 +497,15 @@ context.fillText(m3, width2+30, 25);
 texture.needsUpdate = true;
 // update the textbox position
 ww = window.innerWidth;
-//console.log("window width " + ww);
-//console.log("mouse.x " + mouse.x);
-//console.log("text width " + width / 5);
-if (mouse.x + width / 3 + 45 < ww)
+console.log("window width " + ww);
+console.log("mouse.x " + mouse.x);
+console.log("text width " + width);
+if (mouse.x + width / 2 + 10 < ww)
 	sprite.position.set(mouse.x, mouse.y, 0 );
 else{
 	//console.log(ww - width / 3);
 	//console.log(mouse.x - width / 3);	
-	sprite.position.set(ww - width / 3 - 45, mouse.y, 0);
+	sprite.position.set(ww - width / 2 - 10, mouse.y, 0);
     }
 }
 
