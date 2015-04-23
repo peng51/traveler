@@ -45,7 +45,7 @@ var poems;
 var srcLang = "NA";
 
 //List of Projections we will use
-var projections= ['mercator','','','',''];
+var projections= ['mercator','cylindricalEqualArea','homolosine','stereographic'];
 
 
 //The current Projection Type
@@ -86,7 +86,7 @@ document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 window.setInterval(getnewpoem, 5000);
 
 // Periodically change the projection
-//window.setInterval(changeprojection, 5000);
+window.setInterval(changeprojection, 5000);
 
 
 //Here is where all the heavy lifting happens
@@ -99,6 +99,12 @@ initD3();
 initThreeJS();
 animate();
 
+
+function changeprojection()
+{
+  proj_index = Math.floor(Math.random() * (3 - 0 + 1)) + 0; 
+  cur_projection = projections[proj_index]; 
+}
 // init threeJS
 function initThreeJS(){
 	// scene
@@ -150,7 +156,7 @@ projection = d3.geo.mercator().scale(width / 6).translate([width / 2, height / 2
 // the path function translates GEOJson objects into svg path data
 path = d3.geo.path().projection(projection);
 // tranform the GEOJson object into svg path data and display it into html
-d3.json("maps/NA.geo.json", function(data)
+d3.json("maps/"+srcLang+".geo.json", function(data)
 {
   group = svg.append("g").attr("id","group");
   group.selectAll("path").data(data.features).enter().append("path").attr("d",path);
