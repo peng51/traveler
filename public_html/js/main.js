@@ -42,7 +42,7 @@ var data1,data2;
 var poems;
 
 //Source Language
-var srcLang = window.centre;
+var srcLang = window.center;
 
 //List of Projections we will use
 var projections= ['mercator','cylindricalEqualArea','homolosine','stereographic'];
