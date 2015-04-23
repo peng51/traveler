@@ -427,6 +427,9 @@ gradient.addColorStop("0", 'red');
 gradient.addColorStop("0.5", 'red');
 gradient.addColorStop("1.0", 'red');*/
 
+if(typeof m1 === "undefined" || typeof m2 === "undefined" || typeof m3 === "undefined")
+	return "";
+
 canvas.width = width;
 //canvas.height = height;
 // Fill with gradient
