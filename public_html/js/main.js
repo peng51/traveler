@@ -1,5 +1,8 @@
 // Canvas for displaying the poem
-var canvas, context;
+//var canvas, context;
+
+// ThreeJS variables
+var scene, camera, render, canvas, context, texture, sprite;
 
 //Varibles holding the quadrants
 var firstQuadrantData,secondQuadrantData,thirdQuadrantData,fourthQuadrantData, centreData;
@@ -73,9 +76,8 @@ var L145 = '';
 var L125 = '';
 
 //Layout stuff for D3
-canvas = document.getElementById('myCanvas');
-context = canvas.getContext('2d');
-
+//canvas = document.getElementById('myCanvas');
+//context = canvas.getContext('2d');
 
 //Mouse Event Listener
 document.addEventListener( 'mousemove', onDocumentMouseMove, false );
@@ -94,7 +96,48 @@ loadPoems();
 setQuadrants(srcLang);
 getnewpoem();
 initD3();
+initThreeJS();
+animate();
 
+// init threeJS
+function initThreeJS(){
+	// scene
+	scene = new THREE.Scene();
+	// camera
+	var width = window.innerWidth, height = window.innerHeight;
+	var angle = 45, aspect = width / height, near = 0.1, far = 20000;
+	camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
+	scene.add(camera);
+	camera.position.set(0, 150, 400);
+	camera.lookAt(scene.position);	
+	// renderer
+	if ( Detector.webgl )
+		renderer = new THREE.WebGLRenderer({antialias:true});
+	else
+		renderer = new THREE.CanvasRenderer(); 
+	renderer.setSize(width, height);
+	// set the ThreeJS scene in the same papge as the D3
+	var container = document.getElementById('canvas-container');
+      	container.appendChild( renderer.domElement );
+	// canvas, context, texture, sprite 	 	
+	canvas = document.createElement('canvas');
+      	context = canvas.getContext('2d');
+	texture = new THREE.Texture(canvas);
+	texture.needsUpdate = true;
+	var spriteMaterial = new 
+		THREE.SpriteMaterial({map:texture, useScreenCoordinates:true, alignment:THREE.SpriteAlignment.topLeft});	
+	sprite = new THREE.Sprite(spriteMaterial);
+	sprite.scale.set(150,150,1.0);
+      	sprite.position.set(50, 50, 0 ); 
+	scene.add(sprite);		
+}
+
+// animate function using ThreeJS to render new interface
+function animate()
+{
+	requestAnimationFrame(animate);
+  	renderer.render(scene, camera);
+}	
 
 // init D3
 function initD3(){
@@ -356,21 +399,21 @@ group.selectAll("path").attr("d",int(t));
 }
 
 // A utility function to draw a rectangle with rounded corners.
-function display_poem(context,x,y,width,height,radius,m1,m2,m3,c1,c2,c3){
-  context.beginPath();
-  context.moveTo(x,y+radius);
-  context.lineTo(x,y+height-radius);
-  context.quadraticCurveTo(x,y+height,x+radius,y+height);
-  context.lineTo(x+width-radius,y+height);
-  context.quadraticCurveTo(x+width,y+height,x+width,y+height-radius);
-  context.lineTo(x+width,y+radius);
-  context.quadraticCurveTo(x+width,y,x+width-radius,y);
-  context.lineTo(x+radius,y);
-  context.quadraticCurveTo(x,y,x,y+radius);
-  context.strokeStyle = "rgba(255, 255, 255, 0.0)";
-  context.stroke();
-  context.fillStyle = "rgba(255, 255, 255, 0.0)";
-  context.fill();
+function display_poem(context,mouse,x,y,width,height,radius,m1,m2,m3,c1,c2,c3){
+ //context.beginPath();
+  //context.moveTo(x,y+radius);
+  //context.lineTo(x,y+height-radius);
+ // context.quadraticCurveTo(x,y+height,x+radius,y+height);
+ // context.lineTo(x+width-radius,y+height);
+ // context.quadraticCurveTo(x+width,y+height,x+width,y+height-radius);
+ // context.lineTo(x+width,y+radius);
+ // context.quadraticCurveTo(x+width,y,x+width-radius,y);
+ // context.lineTo(x+radius,y);
+ // context.quadraticCurveTo(x,y,x,y+radius);
+ // context.strokeStyle = "rgba(255, 255, 255, 0.0)";
+ // context.stroke();
+ // context.fillStyle = "rgba(255, 255, 255, 0.0)";
+ // context.fill();
 
 /*// Create gradient
 var gradient = context.createLinearGradient(0, 0, canvas.width, 0);
@@ -378,6 +421,8 @@ gradient.addColorStop("0", 'red');
 gradient.addColorStop("0.5", 'red');
 gradient.addColorStop("1.0", 'red');*/
 
+canvas.width = width;
+//canvas.height = height;
 // Fill with gradient
 context.font="30px Georgia"
 context.fillStyle = c1;
@@ -389,12 +434,26 @@ context.fillText(m1, 10, 25);
 context.fillStyle = c2;
 context.fillText(m2, width1+20, 25);
 
-metrics1 = context.measureText(m1+m2);
-width1 = metrics1.width;
+var metrics2 = context.measureText(m1+m2);
+var width2 = metrics2.width;
 
 context.fillStyle = c3;
-context.fillText(m3, width1+20, 25);
+context.fillText(m3, width2+30, 25);
 
+//con.fillText(m3, 4,20 );
+texture.needsUpdate = true;
+// update the textbox position
+ww = window.innerWidth;
+//console.log("window width " + ww);
+//console.log("mouse.x " + mouse.x);
+//console.log("text width " + width / 5);
+if (mouse.x + width / 3 + 45 < ww)
+	sprite.position.set(mouse.x, mouse.y, 0 );
+else{
+	//console.log(ww - width / 3);
+	//console.log(mouse.x - width / 3);	
+	sprite.position.set(ww - width / 3 - 45, mouse.y, 0);
+    }
 }
 
 // capture mouse movement and update the ThreeJS scene
@@ -702,6 +761,6 @@ function update(mouse){
   var width1 = metrics1.width;
 
   //Draw the textbox
-  display_poem(context,x,y,width1 + 20,20+10,15,message1,message2,message3,color1,color2,color3);
+  display_poem(context,mouse,x,y,width1 + 20,20+10,15,message1,message2,message3,color1,color2,color3);
 
 }
