@@ -1,6 +1,9 @@
 # traveler
 
-traveler is a website project for presenting the project for Digital Poetics course.
+"traveler" is a website project for presenting the multi-lingual experiments project in the Digital Poetics course.
+The project demonstrates the dynamic transformation of the idions/setences from one initial language to other languages, with the maps automatically changing in the background.
+
+### Setup
 
 1. install Apache2 server on Ubuntu
 
